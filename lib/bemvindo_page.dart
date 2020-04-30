@@ -1,4 +1,6 @@
+import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
+
 
 class Bemvindo extends StatelessWidget {
   @override
@@ -18,40 +20,20 @@ class Bemvindo extends StatelessWidget {
             Container(
               height: 100,
             ),
-            Container(
-              height: 60,
-              width: 300,
-              alignment: Alignment.center,
-              child: Text(
-                'Acessar',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: Color(0xff0076EB),
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-              ),
+            BotaoWidget(
+              nome: 'Acessar',
+              clicar: (){
+                print('Clicando em acessar');
+              },
             ),
             Container(
               height: 50,
             ),
-            Container(
-              height: 60,
-              width: 300,
-              alignment: Alignment.center,
-              child: Text(
-                'Cadastrar',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: Color(0xff0076EB),
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-              ),
+            BotaoWidget(
+              nome: 'Cadastrar',
+              clicar: (){
+                print('Clicando em cadastrar');
+              },
             ),
           ],
         ),
@@ -59,3 +41,5 @@ class Bemvindo extends StatelessWidget {
     );
   }
 }
+
+

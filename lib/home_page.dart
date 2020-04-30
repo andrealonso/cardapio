@@ -1,6 +1,8 @@
+import 'package:cardapio/widgets/item_estab.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
+  // final List<Widget> itens = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -9,23 +11,11 @@ class HomePage extends StatelessWidget {
         centerTitle: true,
       ),
       body: Container(
-        
         child: Column(children: [
           Container(
             height: 60,
             decoration: BoxDecoration(
               color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black,
-                  blurRadius: 10.0, // has the effect of softening the shadow
-                  spreadRadius: 1.0, // has the effect of extending the shadow
-                  offset: Offset(
-                    5.0, // horizontal, move right 10
-                    5.0, // vertical, move down 10
-                  ),
-                )
-              ],
             ),
             child: Row(children: [
               Container(
@@ -44,17 +34,72 @@ class HomePage extends StatelessWidget {
           Expanded(
             child: ListView(
               children: <Widget>[
-                ItemWidget(),
-                ItemWidget(),
-                ItemWidget(),
-                ItemWidget(),
-                ItemWidget(),
-                ItemWidget(),
-                ItemWidget(),
-                ItemWidget(),
-                ItemWidget(),
-                ItemWidget(),
-                ItemWidget(),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: true,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: true,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: true,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: true,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: true,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: true,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: true,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: true,
+                ),
               ],
             ),
           ),
@@ -74,49 +119,4 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class ItemWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        right: 20,
-      ),
-      color: Colors.white,
-      margin: EdgeInsets.only(top: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-            height: 80,
-            width: 60,
-            child: Icon(
-              Icons.photo,
-              size: 50,
-            ),
-          ),
-          Expanded(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                'Nome do estabelecimento',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text('4 Km'),
-            ]),
-          ),
-          Column(children: [
-            Icon(Icons.favorite_border, color: Colors.red),
-            Icon(
-              Icons.thumb_up,
-              color: Colors.blue,
-            ),
-            Text('456'),
-          ]),
-        ],
-      ),
-    );
-  }
-}
+
