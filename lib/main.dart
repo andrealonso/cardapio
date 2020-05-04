@@ -1,5 +1,6 @@
 import 'package:cardapio/bemvindo_page.dart';
 import 'package:cardapio/cad_opcao_page.dart';
+import 'package:cardapio/caduser_page.dart';
 import 'package:cardapio/telamodal.dart';
 import 'package:flutter/material.dart';
 import 'home_page.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
        primarySwatch: Colors.blue,
       ),
-      home: CadOpcaoPage(),
+      home: CadUserPage(),
     );
   }
 }

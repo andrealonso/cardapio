@@ -1,13 +1,32 @@
 import 'package:cardapio/widgets/item_estab.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   // final List<Widget> itens = [];
   @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  var titulo = '';
+  @override
+
+  void initState(){
+    super.initState();
+
+    SharedPreferences.getInstance().then((instance){
+      setState(() {
+        titulo = instance.getString('nome');
+      });
+    });
+
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Estabelecimentos'),
+        title: Text(titulo),
         centerTitle: true,
       ),
       body: Container(
@@ -69,6 +88,78 @@ class HomePage extends StatelessWidget {
                   km: '10 Km',
                   likes: 234,
                   favorito: true,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
+                ),
+                ItemWidget(
+                  nome: 'Churrascaria',
+                  km: '10 Km',
+                  likes: 234,
+                  favorito: false,
                 ),
                 ItemWidget(
                   nome: 'Churrascaria',
