@@ -1,106 +1,112 @@
+import 'package:cardapio/home_page.dart';
+import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final formkey = GlobalKey<FormState>();
+  var form_user = '';
+  var form_pass = '';
+  var user_saved = '';
+  var pass_saved = '';
+  var logado = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    SharedPreferences.getInstance().then((instance) {
+      user_saved = instance.getString('usuario');
+      pass_saved = instance.getString('senha');
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.only(
-          top: 160,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              height: 50,
-              width: 300,
-              padding: EdgeInsets.only(
-                left:15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black45,
-                    blurRadius: 15.0, // has the effect of softening the shadow
-                    spreadRadius: 1.0, // has the effect of extending the shadow
-                    offset: Offset(
-                      5.0, // horizontal, move right 10
-                      5.0, // vertical, move down 10
-                    ),
-                  )
-                ],
-              ),
-              child: TextField(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('Login'),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 160,
+            left: 40,
+            right: 40,
+          ),
+          child: Form(
+            key: formkey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Usuário'),
+                    border: InputBorder.none,
+                    labelText: 'Usuário',
+                  ),
+                  onSaved: (value) {
+                    form_user = value;
+                  },
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Preencha o usuário!';
+                    }
+                    return null;
+                  },
                 ),
-              
-            ),
-            Container(
-              height: 50,
-            ),
-            Container(
-              height: 50,
-              width: 300,
-              padding: EdgeInsets.only(
-                left:15),
-              
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black45,
-                    blurRadius: 15.0, // has the effect of softening the shadow
-                    spreadRadius: 1.0, // has the effect of extending the shadow
-                    offset: Offset(
-                      5.0, // horizontal, move right 10
-                      5.0, // vertical, move down 10
-                    ),
-                  )
-                ],
-              ),
-              child: TextField(
+                Container(
+                  height: 50,
+                ),
+                TextFormField(
+                  obscureText: true,
                   decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Senha'),
+                    border: InputBorder.none,
+                    labelText: 'Senha',
+                  ),
+                  onSaved: (value) {
+                    form_pass = value;
+                  },
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Preencha o usuário!';
+                    }
+                    return null;
+                  },
                 ),
-              
-            ),
-            Container(
-              height: 50,
-            ),
-            Container(
-              height: 60,
-              width: 300,
-              alignment: Alignment.center,
-              child: Text(
-                'Acessar',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+                Container(
+                  height: 50,
                 ),
-              ),
-              decoration: BoxDecoration(
-                color: Color(0xff0076EB),
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black45,
-                    blurRadius: 15.0, // has the effect of softening the shadow
-                    spreadRadius: 1.0, // has the effect of extending the shadow
-                    offset: Offset(
-                      5.0, // horizontal, move right 10
-                      5.0, // vertical, move down 10
-                    ),
-                  )
-                ],
-              ),
+                BotaoWidget(
+                    nome: 'Acessar',
+                    clicar: () {
+                      if (formkey.currentState.validate()) {
+                        formkey.currentState.save();
+                        formkey.currentState.reset();
+                        if (user_saved.isNotEmpty) {
+                          if (user_saved != form_user ||
+                              pass_saved != form_pass) {
+                            print('Usuário ou senha inválida');
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomePage()));
+                          }
+                        }
+                      }
+                      print(user_saved);
+                      print(pass_saved);
+                    }),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

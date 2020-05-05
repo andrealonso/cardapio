@@ -66,7 +66,7 @@ class _CadUserPageState extends State<CadUserPage> {
                 textAlign: TextAlign.center,
               ),
               Container(
-                height: 60,
+                height: 40,
               ),
               TextFormField(
                 decoration: InputDecoration(
@@ -123,7 +123,7 @@ class _CadUserPageState extends State<CadUserPage> {
                 },
               ),
               Container(
-                height: 60,
+                height: 40,
               ),
               BotaoWidget(
                 nome: 'Cadastrar',

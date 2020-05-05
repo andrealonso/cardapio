@@ -1,5 +1,8 @@
+import 'package:cardapio/login_page.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
+
+import 'caduser_page.dart';
 
 
 class Bemvindo extends StatelessWidget {
@@ -23,6 +26,7 @@ class Bemvindo extends StatelessWidget {
             BotaoWidget(
               nome: 'Acessar',
               clicar: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                 print('Clicando em acessar');
               },
             ),
@@ -32,6 +36,7 @@ class Bemvindo extends StatelessWidget {
             BotaoWidget(
               nome: 'Cadastrar',
               clicar: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CadUserPage()));
                 print('Clicando em cadastrar');
               },
             ),
