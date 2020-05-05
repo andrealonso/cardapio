@@ -1,4 +1,5 @@
 import 'package:cardapio/widgets/item_estab.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,23 +11,29 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var titulo = '';
-  @override
+  var estabelecimentos = [];
 
-  void initState(){
+  @override
+  void initState() {
     super.initState();
 
-    SharedPreferences.getInstance().then((instance){
+    SharedPreferences.getInstance().then((instance) {
       setState(() {
         titulo = instance.getString('nome');
       });
     });
 
+    Dio().get('http://www.mocky.io/v2/5eb1b10f320000769428f8f8').then((resp) {
+      setState(() {
+        estabelecimentos = resp.data;
+      });
+    });
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(titulo),
+        title: Text('Estabelecimentos'),
         centerTitle: true,
       ),
       body: Container(
@@ -52,146 +59,9 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(
             child: ListView(
-              children: <Widget>[
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: true,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: true,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: true,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: true,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: true,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: false,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: true,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: true,
-                ),
-                ItemWidget(
-                  nome: 'Churrascaria',
-                  km: '10 Km',
-                  likes: 234,
-                  favorito: true,
-                ),
-              ],
+              children: estabelecimentos.map((estab) {
+                return ItemWidget(img: estab['imagem'],nome: estab['nome'], km: estab['distancia'], likes: estab['likes'], favorito: estab['favorito']);
+              }).toList(),
             ),
           ),
         ]),
@@ -209,5 +79,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-

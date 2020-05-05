@@ -5,9 +5,11 @@ class ItemWidget extends StatelessWidget {
   final String km;
   final int likes;
   final bool favorito;
+  final String img;
 
   ItemWidget(
-      {@required this.nome,
+      {this.img,
+      @required this.nome,
       @required this.km,
       @required this.likes,
       @required this.favorito});
@@ -24,25 +26,31 @@ class ItemWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Container(
-            height: 80,
+            height: 60,
             width: 60,
-            child: Icon(
-              Icons.photo,
-              size: 50,
+            child: Image.network(
+              img,
+              fit: BoxFit.cover,
             ),
           ),
           Expanded(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                nome,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+            child: Padding(
+              padding: const EdgeInsets.only(left:10),
+              child: Column(
+                
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    nome,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(km),
+                ],
               ),
-              Text(km),
-            ]),
+            ),
           ),
           Column(children: [
             favorito
