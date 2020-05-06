@@ -28,7 +28,6 @@ class _CadUserPageState extends State<CadUserPage> {
     sharedPref.setString('sobrenome', sobrenome);
     sharedPref.setString('usuario', usuario);
     sharedPref.setString('senha', senha);
-
   }
 
   @override
@@ -73,6 +72,11 @@ class _CadUserPageState extends State<CadUserPage> {
                   border: InputBorder.none,
                   labelText: 'Nome',
                 ),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Este campo é obrigatório';
+                  }
+                },
                 onSaved: (value) {
                   setState(() {
                     nome = value;
@@ -87,6 +91,11 @@ class _CadUserPageState extends State<CadUserPage> {
                   border: InputBorder.none,
                   labelText: 'Sobrenome',
                 ),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Este campo é obrigatório';
+                  }
+                },
                 onSaved: (value) {
                   setState(() {
                     sobrenome = value;
@@ -101,6 +110,11 @@ class _CadUserPageState extends State<CadUserPage> {
                   border: InputBorder.none,
                   labelText: 'Usuário (Nº do Celular)',
                 ),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Este campo é obrigatório';
+                  }
+                },
                 onSaved: (value) {
                   setState(() {
                     usuario = value;
@@ -116,6 +130,11 @@ class _CadUserPageState extends State<CadUserPage> {
                   border: InputBorder.none,
                   labelText: 'Senha',
                 ),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Este campo é obrigatório';
+                  }
+                },
                 onSaved: (value) {
                   setState(() {
                     senha = value;
@@ -128,11 +147,14 @@ class _CadUserPageState extends State<CadUserPage> {
               BotaoWidget(
                 nome: 'Cadastrar',
                 clicar: () {
-                  formkey.currentState.save();
-                  salvarUsuario();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
-                  print(usuario);
-                  print(senha);
+                  if (formkey.currentState.validate()) {
+                    formkey.currentState.save();
+                    salvarUsuario();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage()));
+                    print(usuario);
+                    print(senha);
+                  }
                 },
               )
             ],

@@ -35,9 +35,8 @@ class ItemWidget extends StatelessWidget {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left:10),
+              padding: const EdgeInsets.only(left: 10),
               child: Column(
-                
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -59,14 +58,33 @@ class ItemWidget extends StatelessWidget {
                       Icons.favorite_border,
                       color: Colors.red,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      
+                       final snackBar = SnackBar(
+                        content: Text('Adicionado nos favoritos'),
+                        action: SnackBarAction(
+                          label: 'OK',
+                          onPressed: () {},
+                        ),
+                      );
+                      Scaffold.of(context).showSnackBar(snackBar);
+                    },
                   )
                 : IconButton(
                     icon: Icon(
                       Icons.favorite,
                       color: Colors.red,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      final snackBar = SnackBar(
+                        content: Text('Removido dos favoritos'),
+                        action: SnackBarAction(
+                          label: 'OK',
+                          onPressed: () {},
+                        ),
+                      );
+                      Scaffold.of(context).showSnackBar(snackBar);
+                    },
                   ),
             Icon(
               Icons.thumb_up,

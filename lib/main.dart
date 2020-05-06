@@ -22,3 +22,30 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+// Dados para Mocky API
+
+// [
+//   {
+//   "imagem": "https://cdn.neemo.com.br/uploads/settings_webdelivery/logo/562/D08A2322-FDFB-48F4-805F-921446E59810__1_.jpeg",
+//   "nome":"House 82",
+//   "distancia": "2 Km",
+//   "likes": 542,
+//   "favorito": true
+//   },
+//   {
+//   "imagem": "https://static.baratocoletivo.com.br/2019/1106/oferta_15730732931441_destaque.jpg",
+//   "nome":"Pizzaria Fornalha",
+//   "distancia": "3 Km",
+//   "likes": 342,
+//   "favorito": false
+//   },
+//   {
+//   "imagem": "http://www.visitepetropolis.com/upload/explorar/palho%C3%A7a-(1).jpg",
+//   "nome":"Churrascaria Rei do Gado",
+//   "distancia": "2,3 Km",
+//   "likes": 200,
+//   "favorito": true
+//   }
+
+// ]
