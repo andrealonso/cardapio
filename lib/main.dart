@@ -1,10 +1,12 @@
-import 'package:cardapio/bemvindo_page.dart';
-import 'package:cardapio/cad_opcao_page.dart';
-import 'package:cardapio/caduser_page.dart';
+import 'package:cardapio/pages/bemvindo_page.dart';
+import 'package:cardapio/pages/cad_opcao_page.dart';
+import 'package:cardapio/pages/caduser_page.dart';
+import 'package:cardapio/pages/produto_view_page.dart';
 import 'package:cardapio/telamodal.dart';
 import 'package:flutter/material.dart';
-import 'home_page.dart';
-import 'login_page.dart';
+import 'package:cardapio/pages/home_page.dart';
+import 'package:cardapio/pages/login_page.dart';
+// import 'package:cardapio/pages/produto_view_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
        primarySwatch: Colors.blue,
       ),
-      home: Bemvindo(),
+      home: ProdutoViewPage(),
     );
   }
 }

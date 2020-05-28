@@ -1,9 +1,10 @@
 import 'dart:convert';
 
-import 'package:cardapio/home_page.dart';
+import 'package:cardapio/pages/home_page.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class CadUserPage extends StatefulWidget {
   @override

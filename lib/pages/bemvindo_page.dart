@@ -1,4 +1,4 @@
-import 'package:cardapio/login_page.dart';
+import 'package:cardapio/pages/login_page.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -46,5 +46,3 @@ class Bemvindo extends StatelessWidget {
     );
   }
 }
-
-

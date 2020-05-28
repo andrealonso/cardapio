@@ -1,0 +1,1 @@
+const URL_VIEW_PRODUTO = "http://www.mocky.io/v2/";
