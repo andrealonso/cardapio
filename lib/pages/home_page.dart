@@ -1,5 +1,7 @@
+import 'package:cardapio/pages/bemvindo_page.dart';
 import 'package:cardapio/widgets/item_estab.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var titulo = '';
   var estabelecimentos = [];
+  final _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -76,6 +79,19 @@ class _HomePageState extends State<HomePage> {
         ),
         elevation: 20,
       ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(child: Text('Usuario')),
+            Spacer(),
+            FlatButton.icon(onPressed: _sair, icon: Icon(Icons.exit_to_app), label: Text('Sair'))
+          ]
+        ),
+      ),
     );
+  }
+  _sair() async {
+    await _auth.signOut();
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Bemvindo()));
   }
 }

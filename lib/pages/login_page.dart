@@ -1,5 +1,6 @@
 import 'package:cardapio/pages/home_page.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,11 +11,28 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final formkey = GlobalKey<FormState>();
+  final _auth = FirebaseAuth.instance;
+
   var form_user = '';
   var form_pass = '';
   var user_saved = '';
   var pass_saved = '';
   var logado = false;
+
+  _login() async {
+    if (formkey.currentState.validate()) {
+      formkey.currentState.save();
+      try {
+        await _auth.signInWithEmailAndPassword(
+            email: form_user.trim(), password: form_pass.trim());
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomePage()));
+      } catch (e) {
+        formkey.currentState.reset();
+        print(e);
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -61,17 +79,24 @@ class _LoginPageState extends State<LoginPage> {
                 height: 20,
               ),
               TextFormField(
-                keyboardType: TextInputType.phone,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  border: InputBorder.none,
-                  labelText: 'Usuário',
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue)),
+                  labelText: 'Usuário (seu email)',
+                  
                 ),
                 onSaved: (value) {
                   form_user = value;
                 },
                 validator: (value) {
+                  bool emailValid = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$').hasMatch(value);
                   if (value.isEmpty) {
-                    return 'Preencha o usuário!';
+                    return 'Preencha o email!';
+                  } else {
+                    if (!emailValid){
+                      return 'O endereço do email não é válido';
+                    }
                   }
                   return null;
                 },
@@ -82,7 +107,8 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 obscureText: true,
                 decoration: InputDecoration(
-                  border: InputBorder.none,
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue)),
                   labelText: 'Senha',
                 ),
                 onSaved: (value) {
@@ -90,7 +116,11 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Preencha a senha!';
+                    return 'Preench a senha!';
+                  } else {
+                    if (value.length < 6) {
+                      return 'A senha precisa ter no mínimo 6 dígitos';
+                    }
                   }
                   return null;
                 },
@@ -101,25 +131,24 @@ class _LoginPageState extends State<LoginPage> {
               BotaoWidget(
                   nome: 'Acessar',
                   clicar: () {
-                    if (formkey.currentState.validate()) {
-                      formkey.currentState.save();
-                      formkey.currentState.reset();
-                      if (user_saved.isNotEmpty) {
-                        if (user_saved != form_user ||
-                            pass_saved != form_pass) {
-                          print('Usuário ou senha inválida');
-                        } else {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()));
-                        }
-                      }
-                    }
-                    print(user_saved);
-                    print(pass_saved);
+                    _login();
+                    // if (formkey.currentState.validate()) {
+                    //   formkey.currentState.save();
+                    //   formkey.currentState.reset();
+                    //   if (user_saved.isNotEmpty) {
+                    //     if (user_saved != form_user ||
+                    //         pass_saved != form_pass) {
+                    //       print('Usuário ou senha inválida');
+                    //     } else {
+                    //       Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (context) => HomePage()));
+                    //     }
+                    //   }
+
+                    // }
                   }),
-                  
             ],
           ),
         ),

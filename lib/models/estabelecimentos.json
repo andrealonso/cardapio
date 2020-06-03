@@ -1,0 +1,70 @@
+{
+    "estabelecimentos": [
+        {
+            "chave": {
+                "nome": "House 82",
+                "descricao": "Descrição do restaurante",
+                "endereco": "Endereco do restaurante",
+                "cep": "cep do restaurante",
+                "hora_abre": "10:00",
+                "hora_fecha": "0:00",
+                "produtos": [
+                    {
+                        "nome": "Pizza",
+                        "preco": 20.00,
+                        "descricao": "descricao do produto",
+                        "composicao": "composicao do produto",
+                        "img": "url",
+                        "avaliacaoProd": {
+                            "apresentacao": 2,
+                            "sabor": 2,
+                            "preco": 2,
+                            "tempo": 2
+                        },
+                        "curtidasProd": [
+                            {
+                                "uid": "sdgsfgsdfg",
+                                "nome": "Paulo",
+                                "img": "url"
+                            },
+                            {
+                                "uid": "sdgsfgsdfg",
+                                "nome": "Rita",
+                                "img": "url"
+                            },
+                            {
+                                "uid": "sdgsfgsdfg",
+                                "nome": "Renata",
+                                "img": "url"
+                            }
+                        ]
+                    }
+                ],
+                "avaliacaoEst": {
+                    "ambiente": 2,
+                    "preco": 2,
+                    "atendimento": 2,
+                    "tempo": 2,
+                    "variedade": 3
+                },
+                "curtidasEst": [
+                    {
+                        "uid": "sdgsfgsdfg",
+                        "nome": "Pedro",
+                        "img": "url"
+                    },
+                    {
+                        "uid": "sdgsfgsdfg",
+                        "nome": "Ricardo",
+                        "img": "url"
+                    },
+                    {
+                        "uid": "sdgsfgsdfg",
+                        "nome": "Maria",
+                        "img": "url"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,3 +1,4 @@
+import 'package:cardapio/pages/caduser_page.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class CadOpcaoPage extends StatelessWidget {
                 BotaoWidget(
               nome: 'Cadastrar cliente',
               clicar: (){
-                print('Cadastrar cliente');
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CadUserPage()));
               },),
               Container(height: 40,),
         Icon(Icons.restaurant_menu,size: 200,color: Color(0xff0076EB),),

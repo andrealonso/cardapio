@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:cardapio/models/perfil_user_modal.dart';
 import 'package:cardapio/pages/home_page.dart';
+import 'package:cardapio/services/perfil_usuario_service.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class CadUserPage extends StatefulWidget {
   @override
@@ -13,6 +15,9 @@ class CadUserPage extends StatefulWidget {
 
 class _CadUserPageState extends State<CadUserPage> {
   final formkey = GlobalKey<FormState>();
+  final _auth = FirebaseAuth.instance;
+  PerfilUsuarioModel _userPerfil;
+
   var nome = '';
   var sobrenome = '';
   var usuario = '';
@@ -20,15 +25,30 @@ class _CadUserPageState extends State<CadUserPage> {
 
   Future salvarUsuario() async {
     var sharedPref = await SharedPreferences.getInstance();
-    // var user = {
-    //   'usuario': usuario,
-    //   'senha': senha
-    // };
-    // sharedPref.setString('user', jsonEncode(user));
     sharedPref.setString('nome', nome);
     sharedPref.setString('sobrenome', sobrenome);
     sharedPref.setString('usuario', usuario);
     sharedPref.setString('senha', senha);
+  }
+
+  _cadastrarUsuario() async {
+    final _userAtual = await FirebaseAuth.instance.currentUser();
+
+    try {
+      print(usuario);
+      print(senha);
+      await _auth.createUserWithEmailAndPassword(
+          email: usuario.trim(), password: senha);
+    } catch (e) {
+      print(e);
+    }
+
+    //await _auth.signInWithEmailAndPassword(email: usuario, password: senha);
+    // var _perfil = PerfilUsuarioModel(
+    //     nome: nome, sobrenome: sobrenome, uid: _userAtual.uid);
+    // await PerfilUsuarioService().criarPerfil(_perfil);
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   @override
@@ -70,7 +90,8 @@ class _CadUserPageState extends State<CadUserPage> {
               ),
               TextFormField(
                 decoration: InputDecoration(
-                  border: InputBorder.none,
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue)),
                   labelText: 'Nome',
                 ),
                 validator: (value) {
@@ -89,7 +110,8 @@ class _CadUserPageState extends State<CadUserPage> {
               ),
               TextFormField(
                 decoration: InputDecoration(
-                  border: InputBorder.none,
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue)),
                   labelText: 'Sobrenome',
                 ),
                 validator: (value) {
@@ -107,14 +129,22 @@ class _CadUserPageState extends State<CadUserPage> {
                 height: 40,
               ),
               TextFormField(
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  border: InputBorder.none,
-                  labelText: 'Usuário (Nº do Celular)',
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue)),
+                  labelText: 'Usuário (Seu email)',
                 ),
                 validator: (value) {
+                  bool emailValid = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$').hasMatch(value);
                   if (value.isEmpty) {
-                    return 'Este campo é obrigatório';
+                    return 'Preencha o email!';
+                  } else {
+                    if (!emailValid){
+                      return 'O endereço do email não é válido';
+                    }
                   }
+                  return null;
                 },
                 onSaved: (value) {
                   setState(() {
@@ -128,12 +158,17 @@ class _CadUserPageState extends State<CadUserPage> {
               TextFormField(
                 obscureText: true,
                 decoration: InputDecoration(
-                  border: InputBorder.none,
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue)),
                   labelText: 'Senha',
                 ),
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Este campo é obrigatório';
+                  } else {
+                    if (value.length < 6) {
+                      return 'A senha precisa ter no mínimo 6 dígitos';
+                    }
                   }
                 },
                 onSaved: (value) {
@@ -151,10 +186,7 @@ class _CadUserPageState extends State<CadUserPage> {
                   if (formkey.currentState.validate()) {
                     formkey.currentState.save();
                     salvarUsuario();
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
-                    print(usuario);
-                    print(senha);
+                    _cadastrarUsuario();
                   }
                 },
               )
