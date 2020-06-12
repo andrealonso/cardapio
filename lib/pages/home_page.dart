@@ -1,8 +1,15 @@
+import 'package:cardapio/controllers/user_controller.dart';
+import 'package:cardapio/models/perfil_user_modal.dart';
 import 'package:cardapio/pages/bemvindo_page.dart';
+import 'package:cardapio/services/perfil_usuario_service.dart';
 import 'package:cardapio/widgets/item_estab.dart';
+import 'package:cardapio/widgets/menu_perfil_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,16 +22,23 @@ class _HomePageState extends State<HomePage> {
   var titulo = '';
   var estabelecimentos = [];
   final _auth = FirebaseAuth.instance;
+  final _perfilserve = PerfilUsuarioService();
+  PerfilUsuarioModel perfilAtual;
 
   @override
   void initState() {
     super.initState();
-
-    SharedPreferences.getInstance().then((instance) {
+    _perfilserve.getPerfil().then((resp) {
       setState(() {
-        titulo = instance.getString('nome');
+        perfilAtual = resp;
       });
     });
+
+    // SharedPreferences.getInstance().then((instance) {
+    //   setState(() {
+    //     titulo = instance.getString('nome');
+    //   });
+    // });
 
     Dio().get('http://www.mocky.io/v2/5eb1b10f320000769428f8f8').then((resp) {
       setState(() {
@@ -34,9 +48,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget build(BuildContext context) {
+    final userAtual = GetIt.I<UserController>().usuarioAtual;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Estabelecimentos'),
+        title: Observer(builder: (_) {
+          return Text('Bem vindo: ${userAtual?.nome}');
+        }),
         centerTitle: true,
       ),
       body: Container(
@@ -63,7 +80,12 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: ListView(
               children: estabelecimentos.map((estab) {
-                return ItemWidget(img: estab['imagem'],nome: estab['nome'], km: estab['distancia'], likes: estab['likes'], favorito: estab['favorito']);
+                return ItemWidget(
+                    img: estab['imagem'],
+                    nome: estab['nome'],
+                    km: estab['distancia'],
+                    likes: estab['likes'],
+                    favorito: estab['favorito']);
               }).toList(),
             ),
           ),
@@ -79,19 +101,12 @@ class _HomePageState extends State<HomePage> {
         ),
         elevation: 20,
       ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            DrawerHeader(child: Text('Usuario')),
-            Spacer(),
-            FlatButton.icon(onPressed: _sair, icon: Icon(Icons.exit_to_app), label: Text('Sair'))
-          ]
-        ),
-      ),
     );
   }
+
   _sair() async {
     await _auth.signOut();
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Bemvindo()));
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => Bemvindo()));
   }
 }

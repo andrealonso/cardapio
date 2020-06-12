@@ -1,7 +1,10 @@
+import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/pages/home_page.dart';
+import 'package:cardapio/services/perfil_usuario_service.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,6 +15,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final formkey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
+  final _service = PerfilUsuarioService();
 
   var form_user = '';
   var form_pass = '';
@@ -25,6 +29,10 @@ class _LoginPageState extends State<LoginPage> {
       try {
         await _auth.signInWithEmailAndPassword(
             email: form_user.trim(), password: form_pass.trim());
+        final perfilAtual = await _service.getPerfil();
+        print('perfil capturado');
+
+        GetIt.I<UserController>().setUsuario(perfilAtual);
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => HomePage()));
       } catch (e) {
@@ -84,19 +92,20 @@ class _LoginPageState extends State<LoginPage> {
                   border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue)),
                   labelText: 'Usuário (seu email)',
-                  
                 ),
                 onSaved: (value) {
                   form_user = value;
                 },
                 validator: (value) {
-                  bool emailValid = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$').hasMatch(value);
+                  bool emailValid =
+                      RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
+                          .hasMatch(value);
                   if (value.isEmpty) {
                     return 'Preencha o email!';
                   } else {
-                    if (!emailValid){
-                      return 'O endereço do email não é válido';
-                    }
+                    // if (!emailValid){
+                    //   return 'O endereço do email não é válido';
+                    // }
                   }
                   return null;
                 },

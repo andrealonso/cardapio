@@ -15,8 +15,12 @@ class PerfilUsuarioService {
   }
 
   Future<PerfilUsuarioModel> getPerfil() async {
+    PerfilUsuarioModel perfil;
     final _auth = await FirebaseAuth.instance.currentUser();
     final resp = await db.document(_auth.uid).get();
-    print(resp.data);
+    print(resp.exists);
+    perfil = PerfilUsuarioModel.fromJson(resp.data);
+
+    return perfil;
   }
 }

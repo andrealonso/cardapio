@@ -1,3 +1,4 @@
+import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/pages/bemvindo_page.dart';
 import 'package:cardapio/pages/cad_opcao_page.dart';
 import 'package:cardapio/pages/caduser_page.dart';
@@ -9,22 +10,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cardapio/pages/home_page.dart';
 import 'package:cardapio/pages/login_page.dart';
+import 'package:get_it/get_it.dart';
+
 
 // import 'package:cardapio/pages/produto_view_page.dart';
+GetIt getIt = GetIt.instance;
+void main() {
+  getIt.registerSingleton<UserController>(UserController(),
+      signalsReady: true);
 
-void main() => runApp(MyApp());
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Inicial(),
-    );
+    return 
+     MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: Inicial(),
+      );
+  
   }
 }
 

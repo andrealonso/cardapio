@@ -6,13 +6,15 @@ class ItemWidget extends StatelessWidget {
   final int likes;
   final bool favorito;
   final String img;
+  final String id;
 
   ItemWidget(
       {this.img,
       @required this.nome,
       @required this.km,
       @required this.likes,
-      @required this.favorito});
+      @required this.favorito,
+      this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +61,7 @@ class ItemWidget extends StatelessWidget {
                       color: Colors.red,
                     ),
                     onPressed: () {
-                      
-                       final snackBar = SnackBar(
+                      final snackBar = SnackBar(
                         content: Text('Adicionado nos favoritos'),
                         action: SnackBarAction(
                           label: 'OK',

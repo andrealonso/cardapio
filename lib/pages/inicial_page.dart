@@ -1,3 +1,4 @@
+import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/pages/bemvindo_page.dart';
 import 'package:cardapio/pages/cad_opcao_page.dart';
 import 'package:cardapio/pages/home_page.dart';
@@ -5,6 +6,7 @@ import 'package:cardapio/pages/login_page.dart';
 import 'package:cardapio/services/perfil_usuario_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class Inicial extends StatefulWidget {
   @override
@@ -18,10 +20,11 @@ class _InicialState extends State<Inicial> {
   @override
   void initState() {
     super.initState();
-    _navegar();
+    
   }
 
   Widget build(BuildContext context) {
+    _navegar(context);
     return Scaffold(
       body: Center(
         child: CircularProgressIndicator(),
@@ -29,12 +32,15 @@ class _InicialState extends State<Inicial> {
     );
   }
 
-  _navegar() async {
-    final userAtual = _auth.currentUser();
+  _navegar(BuildContext context) async {
+    final userAtual = await _auth.currentUser();
 
     if (userAtual != null) {
       try {
-        await _service.getPerfil();
+        final perfilAtual = await _service.getPerfil();
+        print(perfilAtual);
+        GetIt.I<UserController>().setUsuario(perfilAtual);
+
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => HomePage()));
       } catch (e) {

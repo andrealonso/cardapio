@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/models/perfil_user_modal.dart';
 import 'package:cardapio/pages/home_page.dart';
+import 'package:cardapio/services/estab_firestore_service.dart';
 import 'package:cardapio/services/perfil_usuario_service.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CadUserPage extends StatefulWidget {
@@ -16,7 +19,6 @@ class CadUserPage extends StatefulWidget {
 class _CadUserPageState extends State<CadUserPage> {
   final formkey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
-  PerfilUsuarioModel _userPerfil;
 
   var nome = '';
   var sobrenome = '';
@@ -25,6 +27,7 @@ class _CadUserPageState extends State<CadUserPage> {
 
   Future salvarUsuario() async {
     var sharedPref = await SharedPreferences.getInstance();
+
     sharedPref.setString('nome', nome);
     sharedPref.setString('sobrenome', sobrenome);
     sharedPref.setString('usuario', usuario);
@@ -32,13 +35,24 @@ class _CadUserPageState extends State<CadUserPage> {
   }
 
   _cadastrarUsuario() async {
-    final _userAtual = await FirebaseAuth.instance.currentUser();
-
     try {
-      print(usuario);
-      print(senha);
-      await _auth.createUserWithEmailAndPassword(
+      var usuarioCadastrado = await _auth.createUserWithEmailAndPassword(
           email: usuario.trim(), password: senha);
+      var _perfilNovo = PerfilUsuarioModel(
+          nome: nome,
+          sobrenome: sobrenome,
+          uid: usuarioCadastrado.user.uid,
+          img:
+              'https://cdn.lucianapepino.com.br/wp-content/uploads/Ryan-Gosling.jpg',
+          tipo: 'clienteUser',
+          usuario: usuario);
+
+      var _perfilCadastrado =
+          await PerfilUsuarioService().criarPerfil(_perfilNovo);
+
+      GetIt.I<UserController>().setUsuario(_perfilNovo);
+
+      print(_perfilCadastrado);
     } catch (e) {
       print(e);
     }
@@ -136,13 +150,15 @@ class _CadUserPageState extends State<CadUserPage> {
                   labelText: 'Usuário (Seu email)',
                 ),
                 validator: (value) {
-                  bool emailValid = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$').hasMatch(value);
+                  bool emailValid =
+                      RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
+                          .hasMatch(value);
                   if (value.isEmpty) {
                     return 'Preencha o email!';
                   } else {
-                    if (!emailValid){
-                      return 'O endereço do email não é válido';
-                    }
+                    // if (!emailValid){
+                    //   return 'O endereço do email não é válido';
+                    // }
                   }
                   return null;
                 },
