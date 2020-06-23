@@ -1,3 +1,4 @@
+import 'package:cardapio/pages/cad_estab_page1.dart';
 import 'package:cardapio/pages/caduser_page.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class CadOpcaoPage extends StatelessWidget {
                 BotaoWidget(
               nome: 'Cadastrar estabeleciemtno',
               clicar: (){
-                print('Cadastrar estabeleciemtno');
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CadEstabStep1()));
               },),
       ],)
       

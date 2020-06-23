@@ -1,6 +1,8 @@
+import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:flutter/material.dart';
 
 class ItemWidget extends StatelessWidget {
+  final EstabelecimentoModal estab;
   final String nome;
   final String km;
   final int likes;
@@ -10,18 +12,17 @@ class ItemWidget extends StatelessWidget {
 
   ItemWidget(
       {this.img,
-      @required this.nome,
-      @required this.km,
-      @required this.likes,
-      @required this.favorito,
-      this.id});
+      this.nome,
+      this.km,
+      this.likes,
+      this.favorito,
+      this.id,
+      this.estab});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
-        right: 20,
-      ),
+      padding: EdgeInsets.only(right: 20, left: 20),
       color: Colors.white,
       margin: EdgeInsets.only(top: 15),
       child: Row(
@@ -30,10 +31,10 @@ class ItemWidget extends StatelessWidget {
           Container(
             height: 60,
             width: 60,
-            child: Image.network(
-              img,
+            child: estab.img!=null?Image.network(
+              estab.img,
               fit: BoxFit.cover,
-            ),
+            ):Icon(Icons.photo),
           ),
           Expanded(
             child: Padding(
@@ -42,7 +43,7 @@ class ItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    nome,
+                    estab.nome,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

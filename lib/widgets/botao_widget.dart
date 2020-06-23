@@ -31,7 +31,7 @@ class BotaoWidget extends StatelessWidget {
               ),
             ),
           ],
-          color: Color(0xff0076EB),
+          color: Color(0xff0076Ef),
           borderRadius: BorderRadius.all(Radius.circular(25)),
         ),
       ),

@@ -4,12 +4,18 @@ import 'package:flutter/material.dart';
 
 import 'caduser_page.dart';
 
-
 class Bemvindo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(
+                'https://image.freepik.com/fotos-gratis/restaurante-de-cafe-cafeteria-borrao-com-fundo-bokeh_1421-472.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
         padding: EdgeInsets.only(
           top: 160,
         ),
@@ -18,15 +24,19 @@ class Bemvindo extends StatelessWidget {
             Text(
               'Seja bem vindo ao \nCardápio Online',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 37, color: Color(0xff777777)),
+              style: TextStyle(
+                  fontSize: 37,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
             ),
             Container(
               height: 100,
             ),
             BotaoWidget(
               nome: 'Acessar',
-              clicar: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+              clicar: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginPage()));
                 print('Clicando em acessar');
               },
             ),
@@ -34,9 +44,10 @@ class Bemvindo extends StatelessWidget {
               height: 50,
             ),
             BotaoWidget(
-              nome: 'Cadastrar',
-              clicar: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CadUserPage()));
+              nome: 'Cadastre-se',
+              clicar: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CadUserPage()));
                 print('Clicando em cadastrar');
               },
             ),

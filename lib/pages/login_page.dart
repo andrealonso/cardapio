@@ -16,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final formkey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
   final _service = PerfilUsuarioService();
+  bool _visivel = false;
 
   var form_user = '';
   var form_pass = '';
@@ -29,15 +30,21 @@ class _LoginPageState extends State<LoginPage> {
       try {
         await _auth.signInWithEmailAndPassword(
             email: form_user.trim(), password: form_pass.trim());
-        final perfilAtual = await _service.getPerfil();
+        final usuarioAtual = await _service.getPerfil();
         print('perfil capturado');
 
-        GetIt.I<UserController>().setUsuario(perfilAtual);
+        GetIt.I<UserController>().setUsuario(usuarioAtual);
+
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => HomePage()));
       } catch (e) {
         formkey.currentState.reset();
-        print(e);
+        if (e.code == 'ERROR_USER_NOT_FOUND') {
+          setState(() {
+            _visivel = true;
+          });
+          print('Usuario ou senha inválidas');
+        }
       }
     }
   }
@@ -89,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
+                  fillColor: Colors.white,
                   border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue)),
                   labelText: 'Usuário (seu email)',
@@ -135,28 +143,23 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
               Container(
-                height: 50,
+                height: 20,
+              ),
+              Container(
+                child: Visibility(
+                  visible: _visivel,
+                  child: Text('Usuario ou senha inválida!', style: TextStyle(color: Colors.red),),
+                  replacement: Text('Usuario ou senha inválida!', style: TextStyle(color: Colors.white),),
+                  
+                ),
+              ),
+              Container(
+                height: 20,
               ),
               BotaoWidget(
                   nome: 'Acessar',
                   clicar: () {
                     _login();
-                    // if (formkey.currentState.validate()) {
-                    //   formkey.currentState.save();
-                    //   formkey.currentState.reset();
-                    //   if (user_saved.isNotEmpty) {
-                    //     if (user_saved != form_user ||
-                    //         pass_saved != form_pass) {
-                    //       print('Usuário ou senha inválida');
-                    //     } else {
-                    //       Navigator.push(
-                    //           context,
-                    //           MaterialPageRoute(
-                    //               builder: (context) => HomePage()));
-                    //     }
-                    //   }
-
-                    // }
                   }),
             ],
           ),

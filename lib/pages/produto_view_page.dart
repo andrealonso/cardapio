@@ -80,7 +80,7 @@ class _ProdutoViewPageState extends State<ProdutoViewPage> {
                   ),
                 ]),
             SizedBox(height: 10),
-            Titulo(texto: produto.preco),
+            Titulo(texto: produto.preco.toString()),
             SizedBox(
               height: 10,
             ),
@@ -91,10 +91,10 @@ class _ProdutoViewPageState extends State<ProdutoViewPage> {
             Paragrafo(texto: produto.composicao),
             SizedBox(height: 10),
             Titulo(texto: 'Avaliação'),
-            AvaliacaoItem(texto: 'Apresentação', valor: produto.avaliacao.apresentacao),
-            AvaliacaoItem(texto: 'Sabor', valor: produto.avaliacao.sabor),
-            AvaliacaoItem(texto: 'Preço', valor: produto.avaliacao.preco),
-            AvaliacaoItem(texto: 'Tempo de preparo', valor: produto.avaliacao.tempo),
+            // AvaliacaoItem(texto: 'Apresentação', valor: produto.avaliacao.apresentacao),
+            // AvaliacaoItem(texto: 'Sabor', valor: produto.avaliacao.sabor),
+            // AvaliacaoItem(texto: 'Preço', valor: produto.avaliacao.preco),
+            // AvaliacaoItem(texto: 'Tempo de preparo', valor: produto.avaliacao.tempo),
             SizedBox(height: 10),
             Titulo(texto: 'Curtido por'),
             Container(

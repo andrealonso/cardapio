@@ -44,7 +44,7 @@ class _CadUserPageState extends State<CadUserPage> {
           uid: usuarioCadastrado.user.uid,
           img:
               'https://cdn.lucianapepino.com.br/wp-content/uploads/Ryan-Gosling.jpg',
-          tipo: 'clienteUser',
+          tipoUser: 'cliente',
           usuario: usuario);
 
       var _perfilCadastrado =

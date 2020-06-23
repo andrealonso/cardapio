@@ -41,15 +41,25 @@ class _InicialState extends State<Inicial> {
         print(perfilAtual);
         GetIt.I<UserController>().setUsuario(perfilAtual);
 
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => HomePage()));
+        if(perfilAtual.tipoUser=='cliente'){
+        _navegateTo(HomePage());
+
+        } else {
+        _navegateTo(HomePage());
+
+        }
       } catch (e) {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Bemvindo()));
+        _navegateTo(Bemvindo());
       }
     } else {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => LoginPage()));
+      _navegateTo(Bemvindo());
     }
   }
+
+void _navegateTo(Widget page){
+Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => page));
 }
+
+}
+
