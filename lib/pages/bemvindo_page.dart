@@ -2,7 +2,7 @@ import 'package:cardapio/pages/login_page.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
 
-import 'caduser_page.dart';
+import 'cad_user_page.dart';
 
 class Bemvindo extends StatelessWidget {
   @override
@@ -11,8 +11,8 @@ class Bemvindo extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(
-                'https://image.freepik.com/fotos-gratis/restaurante-de-cafe-cafeteria-borrao-com-fundo-bokeh_1421-472.jpg'),
+
+            image: AssetImage('assets/images/tela_bemvindo.jpg'),
             fit: BoxFit.cover,
           ),
         ),

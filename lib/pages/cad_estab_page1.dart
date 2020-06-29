@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cardapio/controllers/estab_controller.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cardapio/pages/cad_estab_page2.dart';
@@ -6,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CadEstabStep1 extends StatefulWidget {
   @override
@@ -18,6 +21,8 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
   final db = Firestore.instance;
   EstabelecimentoModal perfilAtual;
   var _estabNovo = EstabelecimentoModal();
+  final _picker = ImagePicker();
+  File file;
 
   void cadStep1() {
     _estabNovo.img =
@@ -25,9 +30,29 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
     GetIt.I<EstabController>().setEstab(_estabNovo);
   }
 
+  Widget showImage() {
+    if (file != null) {
+      return Image.file(file, fit: BoxFit.cover);
+    } else {
+      return FittedBox(
+        child: Icon(
+          Icons.photo,
+          color: Colors.blue,
+        ),
+      );
+    }
+    return Container();
+  }
+
+  chooseImage() async {
+    var image = await _picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      file = File(image.path);
+    });
+  }
+
   @override
   void initState() {
-
     super.initState();
     // if (perfilAtual == null) {
     //   GetIt.I<EstabController>().setEstab(EstabelecimentoModal());
@@ -54,19 +79,13 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
                     overflow: Overflow.visible,
                     children: <Widget>[
                       Container(
-                        padding: EdgeInsets.all(5),
-                        width: 300,
-                        height: 187,
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                        ),
-                        child: FittedBox(
-                          child: Icon(
-                            Icons.photo,
-                            color: Colors.blue,
+                          padding: EdgeInsets.all(5),
+                          width: 300,
+                          height: 187,
+                          decoration: BoxDecoration(
+                            border: Border.all(),
                           ),
-                        ),
-                      ),
+                          child: showImage()),
                       Positioned(
                           bottom: -30,
                           right: -40,
@@ -76,7 +95,7 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
                               size: 35,
                               color: Colors.blue,
                             ),
-                            onTap: () {},
+                            onTap: chooseImage,
                           )),
                     ],
                   ),
@@ -179,7 +198,6 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
               SizedBox(
                 height: 10,
               ),
-              
               SizedBox(
                 height: 10,
               ),
@@ -187,7 +205,7 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
                 nome: 'Avançar',
                 clicar: () {
                   formkey.currentState.save();
-        
+
                   cadStep1();
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => CadEstabStep2(

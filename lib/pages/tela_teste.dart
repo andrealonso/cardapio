@@ -3,7 +3,8 @@ import 'package:cardapio/pages/bemvindo_page.dart';
 import 'package:cardapio/pages/cad_estab_page1.dart';
 import 'package:cardapio/pages/cad_opcao_page.dart';
 import 'package:cardapio/pages/cad_produto_page.dart';
-import 'package:cardapio/pages/caduser_page.dart';
+import 'package:cardapio/pages/cad_user_page.dart';
+import 'package:cardapio/pages/cardapio_page.dart';
 import 'package:cardapio/pages/home_page.dart';
 import 'package:cardapio/pages/inicial_page.dart';
 import 'package:cardapio/pages/login_page.dart';
@@ -58,6 +59,12 @@ class _TelaTesteState extends State<TelaTeste> {
                   nome: 'HOME',
                   clicar: () {
                     gotTo(HomePage());
+                  },
+                ),
+                BotaoWidget(
+                  nome: 'Cardapio',
+                  clicar: () {
+                    gotTo(CardapioPage());
                   },
                 ),
                 BotaoWidget(

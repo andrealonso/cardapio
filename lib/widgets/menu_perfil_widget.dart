@@ -1,4 +1,4 @@
-import 'package:cardapio/models/perfil_user_modal.dart';
+import 'package:cardapio/models/usuario_modal.dart';
 import 'package:flutter/material.dart';
 
 class MenuPerfil extends StatelessWidget {

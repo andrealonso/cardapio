@@ -20,7 +20,6 @@ class _InicialState extends State<Inicial> {
   @override
   void initState() {
     super.initState();
-    
   }
 
   Widget build(BuildContext context) {
@@ -41,13 +40,7 @@ class _InicialState extends State<Inicial> {
         print(perfilAtual);
         GetIt.I<UserController>().setUsuario(perfilAtual);
 
-        if(perfilAtual.tipoUser=='cliente'){
         _navegateTo(HomePage());
-
-        } else {
-        _navegateTo(HomePage());
-
-        }
       } catch (e) {
         _navegateTo(Bemvindo());
       }
@@ -56,10 +49,8 @@ class _InicialState extends State<Inicial> {
     }
   }
 
-void _navegateTo(Widget page){
-Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => page));
+  void _navegateTo(Widget page) {
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => page));
+  }
 }
-
-}
-

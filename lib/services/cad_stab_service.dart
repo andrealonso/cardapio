@@ -1,11 +1,24 @@
+import 'dart:io';
+
 import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class CadStabService {
   final db = Firestore.instance.collection('estabelecimentos');
+  final storege = FirebaseStorage.instance;
+  
 
-  Future<EstabelecimentoModal> cadastrar(EstabelecimentoModal estab) async {
+  Future<EstabelecimentoModal> cadastrar(EstabelecimentoModal estab,{File image}) async {
+    if (image!=null){
+      final imagePath = 'imagens/estabelecimentos/${estab.uid}_${DateTime.now()}.jpg';
+      final task = storege.ref().child(imagePath).putFile(image);
+      final snapshot = await task.onComplete;
+      final url = await snapshot.ref.getDownloadURL();
+
+      estab.img = url;
+    }
     try {
       await db.document(estab.uid).setData(estab.toJson());
     } catch (e) {

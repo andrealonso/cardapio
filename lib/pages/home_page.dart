@@ -1,10 +1,12 @@
 import 'package:cardapio/controllers/user_controller.dart';
-import 'package:cardapio/models/perfil_user_modal.dart';
+import 'package:cardapio/models/usuario_modal.dart';
+import 'package:cardapio/pages/cardapio_page.dart';
+import 'package:cardapio/services/cad_produto_service.dart';
 import 'package:cardapio/services/cad_stab_service.dart';
 import 'package:cardapio/services/perfil_usuario_service.dart';
+import 'package:cardapio/services/produto_serv.dart';
 import 'package:cardapio/widgets/item_estab.dart';
 import 'package:cardapio/widgets/menu_drawner_widget.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
@@ -20,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   var titulo = '';
   var estabelecimentos = [];
   final _perfilserve = PerfilUsuarioService();
-  PerfilUsuarioModel usuarioAtual;
+  var usuarioAtual = PerfilUsuarioModel();
   List listaEstabs = [];
 
   _exibirLista() async {
@@ -31,28 +33,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _perfilserve.getPerfil().then((resp) {
-      setState(() {
-        usuarioAtual = resp;
-      });
-      _exibirLista();
-    });
-
-    // SharedPreferences.getInstance().then((instance) {
-    //   setState(() {
-    //     titulo = instance.getString('nome');
-    //   });
-    // });
-
-    Dio().get('http://www.mocky.io/v2/5eb1b10f320000769428f8f8').then((resp) {
-      setState(() {
-        estabelecimentos = resp.data;
-      });
-    });
+    _exibirLista();
   }
 
   Widget build(BuildContext context) {
-    final userAtual = GetIt.I<UserController>().usuarioAtual;
+    final usuarioAtual = GetIt.I<UserController>().usuarioAtual;
 
     return usuarioAtual == null
         ? Espera()
@@ -61,7 +46,7 @@ class _HomePageState extends State<HomePage> {
             drawer: MenuDrawerWidget(),
             appBar: AppBar(
               title: Observer(builder: (_) {
-                return Text('Bem vindo: ${userAtual?.nome}');
+                return Text('Bem vindo: ${usuarioAtual?.nome}');
               }),
               centerTitle: true,
             ),
@@ -89,18 +74,25 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: ListView(
                       children: listaEstabs.map((estab) {
-                    return ItemWidget(estab: estab,
-                        km: '2km',
-                        likes: 123,
-                        favorito: false);
+                    return ItemWidget(
+                      estab: estab,
+                      km: '2km',
+                      likes: 123,
+                      favorito: false,
+                      clickCard: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => CardapioPage(
+                                  estab: estab,
+                                )));
+                      },
+                    );
                   }).toList()),
                 ),
               ]),
             ),
             floatingActionButton: FloatingActionButton(
-              onPressed: () {
+              onPressed: () async {
                 print('Filtrar');
-                // List<EstabelecimentoModal> lista = CadStabService().listEstabs();
               },
               child: Icon(
                 Icons.filter_list,

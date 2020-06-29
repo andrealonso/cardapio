@@ -1,5 +1,14 @@
+import 'dart:ffi';
+
+import 'package:cardapio/controllers/user_controller.dart';
+import 'package:cardapio/models/usuario_modal.dart';
+import 'package:cardapio/models/produto_model.dart';
+import 'package:cardapio/services/cad_produto_service.dart';
+import 'package:cardapio/services/perfil_usuario_service.dart';
+import 'package:cardapio/services/produto_serv.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class CadProdutoForm extends StatefulWidget {
   @override
@@ -7,8 +16,23 @@ class CadProdutoForm extends StatefulWidget {
 }
 
 class _CadProdutoFormState extends State<CadProdutoForm> {
-  final GlobalKey _formkey = GlobalKey<FormState>();
+  final _formkey = GlobalKey<FormState>();
+  ProdutoModel _produto = ProdutoModel();
+  final _perfilServe = PerfilUsuarioService();
+  var usuarioAtual = PerfilUsuarioModel();
+
+  _getUsuarioAtual() {
+    usuarioAtual = GetIt.I<UserController>().usuarioAtual;
+    }
+
   @override
+  @override
+  void initState() { 
+    super.initState();
+    _getUsuarioAtual();
+  }
+
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -68,7 +92,7 @@ class _CadProdutoFormState extends State<CadProdutoForm> {
                   ),
                   validator: (value) {},
                   onSaved: (value) {
-                    // _estabNovo.nome = value;
+                    _produto.nome = value;
                     // perfilAtual.nome = value;
                   },
                   // initialValue: perfilAtual?.nome,
@@ -86,11 +110,7 @@ class _CadProdutoFormState extends State<CadProdutoForm> {
                         borderSide: BorderSide(color: Colors.blue)),
                   ),
                   validator: (value) {},
-                  onSaved: (value) {
-                    // _estabNovo.nome = value;
-                    // perfilAtual.nome = value;
-                  },
-                  // initialValue: perfilAtual?.nome,
+                  onSaved: (value) => _produto.preco = double.tryParse(value),
                 ),
               ),
               SizedBox(
@@ -106,7 +126,7 @@ class _CadProdutoFormState extends State<CadProdutoForm> {
                   ),
                   validator: (value) {},
                   onSaved: (value) {
-                    // _estabNovo.nome = value;
+                    _produto.descricao = value;
                     // perfilAtual.nome = value;
                   },
                   // initialValue: perfilAtual?.nome,
@@ -125,7 +145,7 @@ class _CadProdutoFormState extends State<CadProdutoForm> {
                   ),
                   validator: (value) {},
                   onSaved: (value) {
-                    // _estabNovo.nome = value;
+                    _produto.composicao = value;
                     // perfilAtual.nome = value;
                   },
                   // initialValue: perfilAtual?.nome,
@@ -136,7 +156,13 @@ class _CadProdutoFormState extends State<CadProdutoForm> {
               ),
               BotaoWidget(
                 nome: 'Cadastrar',
-                clicar: () {},
+                clicar: () {
+                  _getUsuarioAtual();
+                  _formkey.currentState.save();
+                  _produto.uid = usuarioAtual.uid;
+                  print(_produto.nome);
+                  CadProdutoService().cadastrar(_produto);
+                },
               ),
               SizedBox(
                 height: 30,

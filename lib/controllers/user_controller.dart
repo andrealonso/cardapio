@@ -1,5 +1,5 @@
 import 'package:mobx/mobx.dart';
-import '../models/perfil_user_modal.dart';
+import '../models/usuario_modal.dart';
 part 'user_controller.g.dart';
 
 class UserController = _UserControllerBase with _$UserController;

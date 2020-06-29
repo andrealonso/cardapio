@@ -6,7 +6,7 @@ class ProdutoModel {
   String img;
   String descricao;
   String composicao;
-  Double preco;
+  double preco;
   int likes;
 
   ProdutoModel(
@@ -24,7 +24,11 @@ class ProdutoModel {
     img = json['img'];
     descricao = json['descricao'];
     composicao = json['composicao'];
-    preco = json['preco'];
+    if (json['preco'] != null) {
+      preco = json['preco'] is double
+          ? json['preco']
+          : double.tryParse(json['preco']);
+    }
     likes = json['likes'];
   }
 

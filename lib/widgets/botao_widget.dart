@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class BotaoWidget extends StatelessWidget {
   final String nome;
   final Function clicar;
+  final Color cor;
 
-  const BotaoWidget({Key key, this.nome, this.clicar}) : super(key: key);
+  const BotaoWidget({Key key, this.nome, this.clicar, this.cor = Colors.blue}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -27,11 +28,11 @@ class BotaoWidget extends StatelessWidget {
               spreadRadius: 1.0, // has the effect of extending the shadow
               offset: Offset(
                 5.0, // horizontal, move right 10
-                5.0, // vertical, move down 10
+                10.0, // vertical, move down 10
               ),
             ),
           ],
-          color: Color(0xff0076Ef),
+          color: cor,
           borderRadius: BorderRadius.all(Radius.circular(25)),
         ),
       ),

@@ -1,5 +1,5 @@
 import 'package:cardapio/pages/cad_estab_page1.dart';
-import 'package:cardapio/pages/caduser_page.dart';
+import 'package:cardapio/pages/cad_user_page.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
 

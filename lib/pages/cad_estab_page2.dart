@@ -1,10 +1,10 @@
+import 'dart:io';
+
 import 'package:cardapio/controllers/estab_controller.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
-import 'package:cardapio/models/perfil_user_modal.dart';
+import 'package:cardapio/models/usuario_modal.dart';
 import 'package:cardapio/pages/home_page.dart';
 import 'package:cardapio/services/cad_stab_service.dart';
-import 'package:cardapio/services/estab_firestore_service.dart';
-import 'package:cardapio/services/perfil_usuario_service.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,8 +13,9 @@ import 'package:get_it/get_it.dart';
 
 class CadEstabStep2 extends StatefulWidget {
   final EstabelecimentoModal estabNovo;
+  final File file;
 
-  const CadEstabStep2({Key key, this.estabNovo}) : super(key: key);
+  const CadEstabStep2({Key key, this.estabNovo, this.file}) : super(key: key);
   @override
   _CadEstabStep2State createState() => _CadEstabStep2State();
 }
@@ -178,7 +179,7 @@ _getUid() async{
 
       _getUid();
 
-      var _estabCadastrado = CadStabService().cadastrar(perfilAtual);
+      var _estabCadastrado = CadStabService().cadastrar(perfilAtual, image: widget.file);
 
       print(_estabCadastrado);
       Navigator.of(context)
