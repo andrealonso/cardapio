@@ -4,14 +4,17 @@ class BotaoWidget extends StatelessWidget {
   final String nome;
   final Function clicar;
   final Color cor;
+  final double largura;
 
-  const BotaoWidget({Key key, this.nome, this.clicar, this.cor = Colors.blue}) : super(key: key);
+  const BotaoWidget({Key key, this.nome, this.clicar, this.cor = Colors.blue, this.largura}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
         height: 60,
-        width: 300,
+        width: largura,
+        
+        
         alignment: Alignment.center,
         child: Text(
           nome,

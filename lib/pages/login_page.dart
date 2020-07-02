@@ -1,6 +1,6 @@
 import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/pages/home_page.dart';
-import 'package:cardapio/services/perfil_usuario_service.dart';
+import 'package:cardapio/services/usuario_service.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final formkey = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
-  final _service = PerfilUsuarioService();
+  final _service = UsuarioService();
   bool _visivel = false;
 
   var form_user = '';
@@ -30,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
       try {
         await _auth.signInWithEmailAndPassword(
             email: form_user.trim(), password: form_pass.trim());
+            
         final usuarioAtual = await _service.getPerfil();
         print('perfil capturado');
 

@@ -2,17 +2,19 @@ import 'dart:io';
 
 import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/models/usuario_modal.dart';
+import 'package:cardapio/services/estab_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 
-class PerfilUsuarioService {
-  final db = Firestore.instance.collection('perfil_usuario');
+class UsuarioService {
+  final db = Firestore.instance.collection('usuarios');
   final storage = FirebaseStorage.instance;
 
-  Future<PerfilUsuarioModel> criarPerfil(PerfilUsuarioModel usuario, {File image}) async {
-    if (image!=null){
+  Future<PerfilUsuarioModel> criarPerfil(PerfilUsuarioModel usuario,
+      {File image}) async {
+    if (image != null) {
       final imagePath = 'imagens/usuarios/${usuario.uid}_${DateTime.now()}';
       final task = storage.ref().child(imagePath).putFile(image);
       final snapshot = await task.onComplete;
@@ -29,8 +31,9 @@ class PerfilUsuarioService {
     return usuario;
   }
 
-  Future<PerfilUsuarioModel> atualizarPerfil(PerfilUsuarioModel usuario, {File image}) async{
-    if (image!=null){
+  Future<PerfilUsuarioModel> atualizarPerfil(PerfilUsuarioModel usuario,
+      {File image}) async {
+    if (image != null) {
       final imagePath = 'imagens/usuarios/${usuario.uid}_${DateTime.now()}';
       final task = storage.ref().child(imagePath).putFile(image);
       final snapshot = await task.onComplete;
@@ -41,7 +44,7 @@ class PerfilUsuarioService {
     try {
       await db.document(usuario.uid).updateData({
         "img": usuario.img,
-        "nome":usuario.nome,
+        "nome": usuario.nome,
         "sobrenome": usuario.sobrenome,
       });
     } catch (e) {
@@ -49,7 +52,6 @@ class PerfilUsuarioService {
     }
     GetIt.I<UserController>().setUsuario(usuario);
     return usuario;
-
   }
 
   Future<PerfilUsuarioModel> getPerfil() async {
@@ -60,5 +62,26 @@ class PerfilUsuarioService {
     perfil = PerfilUsuarioModel.fromJson(resp.data);
 
     return perfil;
+  }
+
+  Future<void> excluir(PerfilUsuarioModel usuario) async {
+    final alth = FirebaseAuth.instance;
+    final user = await alth.currentUser();
+    try {
+      if (usuario.img != null) {
+        final img =
+            await FirebaseStorage.instance.getReferenceFromUrl(usuario.img);
+        await img.delete();
+      }
+      await db.document(usuario.uid).delete();
+      await EstabService().excluir(usuario.uid);
+      user.delete().then((_) {
+        print('Usuario deletado');
+      }).catchError((onError) {
+        print(onError);
+      });
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

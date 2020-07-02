@@ -1,16 +1,19 @@
 import 'dart:io';
-
-import 'package:cardapio/controllers/estab_controller.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cardapio/pages/cad_estab_page2.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CadEstabStep1 extends StatefulWidget {
+  final EstabelecimentoModal estab;
+  final bool editar;
+
+  const CadEstabStep1({Key key, this.estab, this.editar = false})
+      : super(key: key);
+
   @override
   _CadEstabStep1State createState() => _CadEstabStep1State();
 }
@@ -19,52 +22,38 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
   final formkey = GlobalKey<FormState>();
   final auth = FirebaseAuth.instance;
   final db = Firestore.instance;
-  EstabelecimentoModal perfilAtual;
-  var _estabNovo = EstabelecimentoModal();
   final _picker = ImagePicker();
   File file;
 
-  void cadStep1() {
-    _estabNovo.img =
-        'https://www.infomoney.com.br/wp-content/uploads/2019/06/pizza-2.jpg';
-    GetIt.I<EstabController>().setEstab(_estabNovo);
-  }
-
-  Widget showImage() {
+  ImageProvider showImage() {
     if (file != null) {
-      return Image.file(file, fit: BoxFit.cover);
+      return FileImage(file);
     } else {
-      return FittedBox(
-        child: Icon(
-          Icons.photo,
-          color: Colors.blue,
-        ),
-      );
+      if (widget.estab != null && widget.estab.img != null) {
+        return NetworkImage(widget.estab.img);
+      } else {
+        return AssetImage("assets/images/img-estab-padrao.png");
+      }
     }
-    return Container();
   }
 
   chooseImage() async {
-    var image = await _picker.getImage(source: ImageSource.gallery);
+    var image = await _picker.getImage(
+        source: ImageSource.gallery, imageQuality: 85, maxHeight: 800);
     setState(() {
       file = File(image.path);
     });
   }
 
   @override
-  void initState() {
-    super.initState();
-    // if (perfilAtual == null) {
-    //   GetIt.I<EstabController>().setEstab(EstabelecimentoModal());
-    //   print(GetIt.I<EstabController>().estabAtual);
-    // }
-    // perfilAtual = GetIt.I<EstabController>().estabAtual;
-  }
-
   Widget build(BuildContext context) {
+    var _estab = widget.estab == null ? EstabelecimentoModal() : widget.estab;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cadastro de estabelecimentos'),
+        title: widget.editar
+            ? Text('Alterar estabelecimento')
+            : Text('Cadastrar estabelecimento'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -72,33 +61,34 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
           key: formkey,
           child: Column(
             children: <Widget>[
-              Container(
-                height: 250,
-                child: Center(
-                  child: Stack(
-                    overflow: Overflow.visible,
-                    children: <Widget>[
-                      Container(
-                          padding: EdgeInsets.all(5),
-                          width: 300,
-                          height: 187,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            width: 300,
+                            height: 200,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.rectangle,
+                                image: DecorationImage(
+                                    image: showImage(), fit: BoxFit.cover)),
                           ),
-                          child: showImage()),
-                      Positioned(
-                          bottom: -30,
-                          right: -40,
-                          child: GestureDetector(
-                            child: Icon(
-                              Icons.photo_camera,
-                              size: 35,
-                              color: Colors.blue,
-                            ),
-                            onTap: chooseImage,
-                          )),
-                    ],
-                  ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          GestureDetector(
+                              onTap: chooseImage,
+                              child: Icon(Icons.photo_camera)),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
@@ -114,10 +104,10 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
                   ),
                   validator: (value) {},
                   onSaved: (value) {
-                    _estabNovo.nome = value;
+                    _estab.nome = value;
                     // perfilAtual.nome = value;
                   },
-                  initialValue: perfilAtual?.nome,
+                  initialValue: _estab?.nome,
                 ),
               ),
               SizedBox(
@@ -133,10 +123,9 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
                   ),
                   validator: (value) {},
                   onSaved: (value) {
-                    _estabNovo.endereco = value;
+                    _estab.endereco = value;
                   },
-                  initialValue:
-                      perfilAtual != null ? perfilAtual.endereco : null,
+                  initialValue: _estab != null ? _estab.endereco : null,
                 ),
               ),
               SizedBox(
@@ -152,9 +141,9 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
                   ),
                   validator: (value) {},
                   onSaved: (value) {
-                    _estabNovo.cep = value;
+                    _estab.cep = value;
                   },
-                  initialValue: perfilAtual != null ? perfilAtual.cep : null,
+                  initialValue: _estab != null ? _estab.cep : null,
                 ),
               ),
               SizedBox(
@@ -171,10 +160,9 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
                   ),
                   validator: (value) {},
                   onSaved: (value) {
-                    _estabNovo.horaAbre = value;
+                    _estab.horaAbre = value;
                   },
-                  initialValue:
-                      perfilAtual != null ? perfilAtual.horaAbre : null,
+                  initialValue: _estab != null ? _estab.horaAbre : null,
                 ),
               ),
               SizedBox(
@@ -191,8 +179,9 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
                   ),
                   validator: (value) {},
                   onSaved: (value) {
-                    _estabNovo.horaFecha = value;
+                    _estab.horaFecha = value;
                   },
+                  initialValue: _estab != null ? _estab.horaFecha : null,
                 ),
               ),
               SizedBox(
@@ -204,13 +193,16 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
               BotaoWidget(
                 nome: 'Avançar',
                 clicar: () {
-                  formkey.currentState.save();
+                  if (formkey.currentState.validate()) {
+                    formkey.currentState.save();
 
-                  cadStep1();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CadEstabStep2(
-                            estabNovo: _estabNovo,
-                          )));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => CadEstabStep2(
+                              estab: _estab,
+                              file: file != null ? file : null,
+                              editar: widget.editar,
+                            )));
+                  }
                 },
               ),
               SizedBox(

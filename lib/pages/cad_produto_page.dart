@@ -1,39 +1,37 @@
-import 'dart:ffi';
+import 'dart:io';
 
-import 'package:cardapio/controllers/user_controller.dart';
-import 'package:cardapio/models/usuario_modal.dart';
+import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cardapio/models/produto_model.dart';
-import 'package:cardapio/services/cad_produto_service.dart';
-import 'package:cardapio/services/perfil_usuario_service.dart';
-import 'package:cardapio/services/produto_serv.dart';
+import 'package:cardapio/pages/cardapio_page.dart';
+import 'package:cardapio/services/produto_service.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 
-class CadProdutoForm extends StatefulWidget {
+class CadProduto extends StatefulWidget {
+  final EstabelecimentoModal estab;
+  final ProdutoModel produto;
+  final bool editar;
+  final String id;
+
+  const CadProduto(
+      {Key key, this.estab, this.produto, this.editar = false, this.id})
+      : super(key: key);
   @override
   _CadProdutoFormState createState() => _CadProdutoFormState();
 }
 
-class _CadProdutoFormState extends State<CadProdutoForm> {
+class _CadProdutoFormState extends State<CadProduto> {
   final _formkey = GlobalKey<FormState>();
   ProdutoModel _produto = ProdutoModel();
-  final _perfilServe = PerfilUsuarioService();
-  var usuarioAtual = PerfilUsuarioModel();
-
-  _getUsuarioAtual() {
-    usuarioAtual = GetIt.I<UserController>().usuarioAtual;
-    }
+  final _picker = ImagePicker();
+  File file;
 
   @override
-  @override
-  void initState() { 
-    super.initState();
-    _getUsuarioAtual();
-  }
-
-
   Widget build(BuildContext context) {
+    if (widget.editar) {
+      _produto = widget.produto;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Cadastro de produto'),
@@ -44,39 +42,39 @@ class _CadProdutoFormState extends State<CadProdutoForm> {
           key: _formkey,
           child: Column(
             children: <Widget>[
-              Container(
-                height: 250,
-                child: Center(
-                  child: Stack(
-                    overflow: Overflow.visible,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        width: 300,
-                        height: 187,
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                        ),
-                        child: FittedBox(
-                          child: Icon(
-                            Icons.photo,
-                            color: Colors.blue,
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            width: 300,
+                            height: 200,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.rectangle,
+                                image: DecorationImage(
+                                    image: showImage(), fit: BoxFit.cover)),
                           ),
-                        ),
-                      ),
-                      Positioned(
-                          bottom: -30,
-                          right: -40,
-                          child: GestureDetector(
+                          SizedBox(
+                            width: 15,
+                          ),
+                          GestureDetector(
+                            onTap: chooseImage,
                             child: Icon(
                               Icons.photo_camera,
-                              size: 35,
-                              color: Colors.blue,
+                              size: 30,
+                              color: Colors.black54,
                             ),
-                            onTap: () {},
-                          )),
-                    ],
-                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
@@ -93,9 +91,8 @@ class _CadProdutoFormState extends State<CadProdutoForm> {
                   validator: (value) {},
                   onSaved: (value) {
                     _produto.nome = value;
-                    // perfilAtual.nome = value;
                   },
-                  // initialValue: perfilAtual?.nome,
+                  initialValue: _produto?.nome,
                 ),
               ),
               SizedBox(
@@ -111,6 +108,8 @@ class _CadProdutoFormState extends State<CadProdutoForm> {
                   ),
                   validator: (value) {},
                   onSaved: (value) => _produto.preco = double.tryParse(value),
+                  initialValue:
+                      _produto.preco != null ? _produto.preco.toString() : null,
                 ),
               ),
               SizedBox(
@@ -127,9 +126,8 @@ class _CadProdutoFormState extends State<CadProdutoForm> {
                   validator: (value) {},
                   onSaved: (value) {
                     _produto.descricao = value;
-                    // perfilAtual.nome = value;
                   },
-                  // initialValue: perfilAtual?.nome,
+                  initialValue: _produto?.descricao,
                 ),
               ),
               SizedBox(
@@ -146,23 +144,38 @@ class _CadProdutoFormState extends State<CadProdutoForm> {
                   validator: (value) {},
                   onSaved: (value) {
                     _produto.composicao = value;
-                    // perfilAtual.nome = value;
                   },
-                  // initialValue: perfilAtual?.nome,
+                  initialValue: _produto?.composicao,
                 ),
               ),
               SizedBox(
                 height: 10,
               ),
               BotaoWidget(
-                nome: 'Cadastrar',
-                clicar: () {
-                  _getUsuarioAtual();
-                  _formkey.currentState.save();
-                  _produto.uid = usuarioAtual.uid;
-                  print(_produto.nome);
-                  CadProdutoService().cadastrar(_produto);
-                },
+                  nome: widget.editar ? 'Atualizar' : 'Cadastrar',
+                  clicar: () {
+                    if (_formkey.currentState.validate()) {
+                      _formkey.currentState.save();
+                      if (widget.editar) {
+                        _atualizar();
+                      } else {
+                        _cadastrar();
+                      }
+                    }
+                  }),
+              SizedBox(
+                height: 30,
+              ),
+              Visibility(
+                visible: widget.editar,
+                child: BotaoWidget(
+                  cor: Colors.red[600],
+                  nome: 'Excluir',
+                  clicar: () {
+                    print('Clicou em excluir');
+                    _excluir(widget.id);
+                  },
+                ),
               ),
               SizedBox(
                 height: 30,
@@ -172,5 +185,48 @@ class _CadProdutoFormState extends State<CadProdutoForm> {
         ),
       ),
     );
+  }
+
+  ImageProvider showImage() {
+    if (file != null) {
+      return FileImage(file);
+    } else {
+      if (widget.produto != null && widget.produto.img != null) {
+        return NetworkImage(widget.produto.img);
+      } else {
+        return AssetImage("assets/images/img-estab-padrao.png");
+      }
+    }
+  }
+
+  chooseImage() async {
+    var image = await _picker.getImage(
+        source: ImageSource.gallery, imageQuality: 85, maxHeight: 800);
+    setState(() {
+      file = File(image.path);
+    });
+  }
+
+  _cadastrar() {
+    _produto.uid = widget.estab.uid;
+    ProdutoService().cadastrar(_produto, image: file);
+    _voltar(context);
+  }
+
+  _atualizar() async{
+    ProdutoService().atualizar(_produto,widget.id, image: file);
+    _voltar(context);
+  }
+
+  _excluir(String id) async {
+    await ProdutoService().excluir(id);
+    _voltar(context);
+  }
+
+  _voltar(BuildContext context) {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => CardapioPage(
+              estab: widget.estab,
+            )));
   }
 }

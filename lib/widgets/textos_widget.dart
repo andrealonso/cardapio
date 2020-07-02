@@ -9,7 +9,7 @@ class Titulo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(5),
-      child: Text(texto, style: TextStyle(fontSize: 16),),
+      child: Text(texto, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
     );
   }
 }
@@ -23,7 +23,7 @@ class Paragrafo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(5),
-      child: Text(texto, style: TextStyle(fontSize: 12),),
+      child: Text(texto, style: TextStyle(fontSize: 20),),
     );
   }
 }

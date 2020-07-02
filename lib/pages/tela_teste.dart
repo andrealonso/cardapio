@@ -82,7 +82,7 @@ class _TelaTesteState extends State<TelaTeste> {
                 BotaoWidget(
                   nome: 'Cad Prod',
                   clicar: () {
-                    gotTo(CadProdutoForm());
+                    gotTo(CadProduto());
                   },
                 ),
                 BotaoWidget(

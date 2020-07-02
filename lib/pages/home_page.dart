@@ -1,10 +1,10 @@
 import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/models/usuario_modal.dart';
 import 'package:cardapio/pages/cardapio_page.dart';
-import 'package:cardapio/services/cad_produto_service.dart';
-import 'package:cardapio/services/cad_stab_service.dart';
-import 'package:cardapio/services/perfil_usuario_service.dart';
-import 'package:cardapio/services/produto_serv.dart';
+import 'package:cardapio/pages/estab_view_page.dart';
+import 'package:cardapio/services/produto_service.dart';
+import 'package:cardapio/services/estab_service.dart';
+import 'package:cardapio/services/usuario_service.dart';
 import 'package:cardapio/widgets/item_estab.dart';
 import 'package:cardapio/widgets/menu_drawner_widget.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +21,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var titulo = '';
   var estabelecimentos = [];
-  final _perfilserve = PerfilUsuarioService();
+  final _perfilserve = UsuarioService();
   var usuarioAtual = PerfilUsuarioModel();
   List listaEstabs = [];
 
   _exibirLista() async {
-    listaEstabs = await CadStabService().listarEstabs();
+    listaEstabs = await EstabService().listarEstabs();
     setState(() {});
   }
 
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                       favorito: false,
                       clickCard: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => CardapioPage(
+                            builder: (context) => EstabView(
                                   estab: estab,
                                 )));
                       },

@@ -1,7 +1,7 @@
 import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class EstabService{
+class EstabServiceFirebase{
   final db = Firestore.instance;
   EstabelecimentoModal estab;  
   

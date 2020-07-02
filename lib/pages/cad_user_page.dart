@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/models/usuario_modal.dart';
 import 'package:cardapio/pages/home_page.dart';
-import 'package:cardapio/services/perfil_usuario_service.dart';
+import 'package:cardapio/pages/inicial_page.dart';
+import 'package:cardapio/services/usuario_service.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import '../util/constantes.dart';
 
@@ -30,15 +33,6 @@ class _CadUserPageState extends State<CadUserPage> {
   var usuario = '';
   var senha = '';
 
-  // Future salvarUsuario() async {
-  //   var sharedPref = await SharedPreferences.getInstance();
-
-  //   sharedPref.setString('nome', nome);
-  //   sharedPref.setString('sobrenome', sobrenome);
-  //   sharedPref.setString('usuario', usuario);
-  //   sharedPref.setString('senha', senha);
-  // }
-
   _cadastrarUsuario() async {
     try {
       var usuarioCadastrado = await _auth.createUserWithEmailAndPassword(
@@ -51,7 +45,8 @@ class _CadUserPageState extends State<CadUserPage> {
           usuario: usuario);
 
       var _perfilCadastrado =
-          await PerfilUsuarioService().criarPerfil(_perfilNovo, image: file);
+          await UsuarioService().criarPerfil(_perfilNovo, image: file);
+      GetIt.I<UserController>().setUsuario(_perfilCadastrado);
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
       print(_perfilCadastrado);
@@ -69,8 +64,8 @@ class _CadUserPageState extends State<CadUserPage> {
           uid: widget.usuario.uid,
           usuario: widget.usuario.usuario);
 
-      var _perfilCadastrado = await PerfilUsuarioService()
-          .atualizarPerfil(_perfilNovo, image: file);
+      var _perfilCadastrado =
+          await UsuarioService().atualizarPerfil(_perfilNovo, image: file);
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
       print(_perfilCadastrado);
@@ -81,7 +76,7 @@ class _CadUserPageState extends State<CadUserPage> {
 
   @override
   Widget build(BuildContext context) {
-    PerfilUsuarioModel userEdit = widget.usuario;
+    var userEdit = widget.usuario;
 
     return Scaffold(
       appBar: AppBar(
@@ -112,9 +107,24 @@ class _CadUserPageState extends State<CadUserPage> {
                             width: 200,
                             height: 200,
                             decoration: BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius:
+                                        2.0, // has the effect of softening the shadow
+                                    spreadRadius:
+                                        1, // has the effect of extending the shadow
+                                    offset: Offset(
+                                      3, // horizontal, move right 10
+                                      6.0, // vertical, move down 10
+                                    ),
+                                  )
+                                ],
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                    image: showImage(), fit: BoxFit.cover)),
+                                    image: showImage(userEdit),
+                                    fit: BoxFit.cover)),
                           ),
                           GestureDetector(
                               onTap: chooseImage,
@@ -251,12 +261,16 @@ class _CadUserPageState extends State<CadUserPage> {
               Container(
                 height: 40,
               ),
-              BotaoWidget(
-                cor: Colors.red[600],
-                nome: 'Excluir',
-                clicar: () {
-                  print('Clicou em excluir');
-                },
+              Visibility(
+                visible: widget.editar,
+                child: BotaoWidget(
+                  cor: Colors.red[600],
+                  nome: 'Excluir',
+                  clicar: () {
+                    print('Clicou em excluir');
+                    _excluir(userEdit);
+                  },
+                ),
               )
             ],
           ),
@@ -265,14 +279,21 @@ class _CadUserPageState extends State<CadUserPage> {
     );
   }
 
-  ImageProvider showImage() {
+  _excluir(PerfilUsuarioModel usuario) async {
+    await UsuarioService().excluir(usuario);
+    print('Usuario excluído com sucesso!');
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => Inicial()));
+  }
+
+  ImageProvider showImage(PerfilUsuarioModel usuario) {
     if (file != null) {
       return FileImage(file);
     } else {
-      if (widget.usuario != null) {
-        return NetworkImage(widget.usuario.img);
+      if (usuario != null && usuario.img != null) {
+        return NetworkImage(usuario.img);
       } else {
-        return NetworkImage(imageAvatarPadrao);
+        return AssetImage(imageAvatarPadrao);
       }
     }
 
@@ -281,7 +302,7 @@ class _CadUserPageState extends State<CadUserPage> {
 
   chooseImage() async {
     var image = await _picker.getImage(
-        source: ImageSource.gallery, imageQuality: 75, maxWidth: 640);
+        source: ImageSource.gallery, imageQuality: 85, maxWidth: 640);
     if (image != null) {
       setState(() {
         file = File(image.path);

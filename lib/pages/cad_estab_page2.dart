@@ -1,33 +1,28 @@
 import 'dart:io';
 
 import 'package:cardapio/controllers/estab_controller.dart';
+import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
-import 'package:cardapio/models/usuario_modal.dart';
 import 'package:cardapio/pages/home_page.dart';
-import 'package:cardapio/services/cad_stab_service.dart';
+import 'package:cardapio/pages/inicial_page.dart';
+import 'package:cardapio/services/estab_service.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class CadEstabStep2 extends StatefulWidget {
-  final EstabelecimentoModal estabNovo;
+  final EstabelecimentoModal estab;
   final File file;
+  final bool editar;
 
-  const CadEstabStep2({Key key, this.estabNovo, this.file}) : super(key: key);
+  const CadEstabStep2({Key key, this.estab, this.file, this.editar=false}) : super(key: key);
   @override
   _CadEstabStep2State createState() => _CadEstabStep2State();
 }
 
 class _CadEstabStep2State extends State<CadEstabStep2> {
   final formkey = GlobalKey<FormState>();
-  var perfilAtual = GetIt.I<EstabController>().estabAtual;
-  final _auth = FirebaseAuth.instance;
-  final db = Firestore.instance;
-  var perfilNovo = PerfilUsuarioModel();
-  var _estabNovo = EstabelecimentoModal();
-  
+  final userAtual = GetIt.I<UserController>().usuarioAtual;
 
   final listaComidas = [
     {'nome': 'Pizza', 'ativo': false},
@@ -64,15 +59,15 @@ class _CadEstabStep2State extends State<CadEstabStep2> {
   @override
   void initState() {
     super.initState();
-    // if (widget.estabNovo != null) {
-    //   _estabNovo = widget.estabNovo;
-    // }
-    print(perfilAtual.nome);
+    print(userAtual?.nome);
     addLista();
     setState(() {});
   }
 
   Widget build(BuildContext context) {
+    var _estab = widget.estab;
+    print(widget.editar);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -104,10 +99,9 @@ class _CadEstabStep2State extends State<CadEstabStep2> {
                   ),
                   validator: (value) {},
                   onSaved: (value) {
-                    perfilAtual.descricao = value;
+                    _estab.descricao = value;
                   },
-                  initialValue:
-                      perfilAtual != null ? perfilAtual.descricao : null,
+                  initialValue: _estab != null ? _estab.descricao : null,
                 ),
                 SizedBox(height: 20),
                 Container(
@@ -141,22 +135,40 @@ class _CadEstabStep2State extends State<CadEstabStep2> {
                   ),
                   validator: (value) {},
                   onSaved: (value) {
-                    perfilAtual.outrosTipos = value;
+                    _estab.outrosTipos = value;
                   },
-                  initialValue:
-                      perfilAtual != null ? perfilAtual.outrosTipos : null,
+                  initialValue: _estab != null ? _estab.outrosTipos : null,
                 ),
                 SizedBox(
                   height: 30,
                 ),
                 BotaoWidget(
-                  nome: 'Cadastrar',
+                  nome: widget.editar?'Alterar':'Cadastrar',
                   clicar: () {
-                    formkey.currentState.save();
-                    _cadastrar();
-                                       
+                    if (formkey.currentState.validate()) {
+                      formkey.currentState.save();
+                      _estab.uid = userAtual.uid;
+                      if (widget.editar){
+                        _atualizar(_estab);
+                      }
+                      _cadastrar(_estab);
+                    }
                   },
                 ),
+                Container(
+                height: 40,
+              ),
+              Visibility(
+                visible: widget.editar,
+                child: BotaoWidget(
+                  cor: Colors.red[600],
+                  nome: 'Excluir',
+                  clicar: () {
+                    print('Clicou em excluir');
+                    _excluir(_estab);
+                  },
+                ),
+              ),
                 SizedBox(
                   height: 30,
                 ),
@@ -168,25 +180,39 @@ class _CadEstabStep2State extends State<CadEstabStep2> {
     );
   }
 
-_getUid() async{
-  var userAtual = await _auth.currentUser();
-  perfilAtual.uid = userAtual.uid; 
-}
-
-  _cadastrar() async {
-    try {      
-      GetIt.I<EstabController>().setEstab(perfilAtual);
-
-      _getUid();
-
-      var _estabCadastrado = CadStabService().cadastrar(perfilAtual, image: widget.file);
+  _cadastrar(EstabelecimentoModal estab) async {
+    try {
+      var _estabCadastrado =
+          await EstabService().cadastrar(estab, image: widget.file);
 
       print(_estabCadastrado);
+      GetIt.I<EstabController>().setEstab(estab);
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
     } catch (e) {
       print(e);
     }
+  }
+
+  _atualizar(EstabelecimentoModal estab) async {
+    try {
+      var _estabCadastrado =
+          await EstabService().atualizar(estab, image: widget.file);
+
+      print(_estabCadastrado);
+      GetIt.I<EstabController>().setEstab(estab);
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  _excluir(EstabelecimentoModal estab) async {
+    await EstabService().excluir(estab.uid);
+    print('Usuario excluído com sucesso!');
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => Inicial()));
   }
 }
 
