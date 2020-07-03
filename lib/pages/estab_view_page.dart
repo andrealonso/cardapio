@@ -40,7 +40,6 @@ class EstabView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
-                          
                           IconButton(
                             icon:
                                 Icon(Icons.favorite_border, color: Colors.red),
@@ -105,22 +104,17 @@ class EstabView extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           BotaoWidget(
             nome: 'Cardápio',
-            largura: 150,
+            largura: 140,
             clicar: () {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (context) => CardapioPage(
-              //           estab: estab,
-              //         )));
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => CardapioPage(
                         estab: estab,
                       )));
-
             },
           ),
           BotaoWidget(
             nome: 'Local',
-            largura: 150,
+           largura: 140,
             clicar: () {},
           ),
         ]),

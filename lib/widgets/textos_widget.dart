@@ -8,8 +8,9 @@ class Titulo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(5),
-      child: Text(texto, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+      // padding: EdgeInsets.all(5),
+      margin: EdgeInsetsDirectional.only(bottom: 5,top: 15),
+      child: Text(texto, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
     );
   }
 }
@@ -22,7 +23,7 @@ class Paragrafo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(5),
+      // padding: EdgeInsets.all(5),
       child: Text(texto, style: TextStyle(fontSize: 20),),
     );
   }

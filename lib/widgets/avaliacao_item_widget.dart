@@ -21,7 +21,7 @@ class AvaliacaoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 250,
+      // width: 250,
       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -29,7 +29,7 @@ class AvaliacaoItem extends StatelessWidget {
           Text(
             texto,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 16,
             ),
           ),
           Container(

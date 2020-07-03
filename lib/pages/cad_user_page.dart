@@ -85,194 +85,198 @@ class _CadUserPageState extends State<CadUserPage> {
       ),
       body: Container(
         padding: EdgeInsets.only(
-          top: 60,
+          top: 20,
           left: 30,
           right: 30,
         ),
         child: Form(
           key: formkey,
-          child: ListView(
-            children: <Widget>[
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Container(
-                            width: 200,
-                            height: 200,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius:
-                                        2.0, // has the effect of softening the shadow
-                                    spreadRadius:
-                                        1, // has the effect of extending the shadow
-                                    offset: Offset(
-                                      3, // horizontal, move right 10
-                                      6.0, // vertical, move down 10
-                                    ),
-                                  )
-                                ],
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    image: showImage(userEdit),
-                                    fit: BoxFit.cover)),
-                          ),
-                          GestureDetector(
-                              onTap: chooseImage,
-                              child: Icon(Icons.photo_camera)),
-                        ],
+          child: SingleChildScrollView(
+                      child: Column(
+              children: <Widget>[
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Container(
+                              width: 200,
+                              height: 200,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius:
+                                          2.0, // has the effect of softening the shadow
+                                      spreadRadius:
+                                          1, // has the effect of extending the shadow
+                                      offset: Offset(
+                                        3, // horizontal, move right 10
+                                        6.0, // vertical, move down 10
+                                      ),
+                                    )
+                                  ],
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: showImage(userEdit),
+                                      fit: BoxFit.cover)),
+                            ),
+                            GestureDetector(
+                                onTap: chooseImage,
+                                child: Icon(Icons.photo_camera)),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                height: 40,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue)),
-                  labelText: 'Nome',
+                SizedBox(
+                  height: 20,
                 ),
-                initialValue: widget.editar ? userEdit.nome : null,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Este campo é obrigatório';
-                  }
-                },
-                onSaved: (value) {
-                  setState(() {
-                    nome = value;
-                  });
-                },
-              ),
-              Container(
-                height: 40,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue)),
-                  labelText: 'Sobrenome',
+                Container(
+                  height: 40,
                 ),
-                initialValue: widget.editar ? userEdit.sobrenome : null,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Este campo é obrigatório';
-                  }
-                },
-                onSaved: (value) {
-                  setState(() {
-                    sobrenome = value;
-                  });
-                },
-              ),
-              Visibility(
-                visible: !widget.editar,
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: 40,
-                    ),
-                    TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue)),
-                        labelText: 'Usuário (Seu email)',
-                      ),
-                      validator: (value) {
-                        bool emailValid = RegExp(
-                                r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
-                            .hasMatch(value);
-                        if (value.isEmpty) {
-                          return 'Preencha o email!';
-                        } else {
-                          // if (!emailValid){
-                          //   return 'O endereço do email não é válido';
-                          // }
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        setState(() {
-                          usuario = value;
-                        });
-                      },
-                    ),
-                    Container(
-                      height: 40,
-                    ),
-                    TextFormField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue)),
-                        labelText: 'Senha',
-                      ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Este campo é obrigatório';
-                        } else {
-                          if (value.length < 6) {
-                            return 'A senha precisa ter no mínimo 6 dígitos';
-                          }
-                        }
-                      },
-                      onSaved: (value) {
-                        setState(() {
-                          senha = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                height: 40,
-              ),
-              BotaoWidget(
-                nome: widget.editar ? 'Atualizar' : 'Cadastrar',
-                clicar: () {
-                  if (formkey.currentState.validate()) {
-                    formkey.currentState.save();
-                    // salvarUsuario();
-                    if (widget.editar) {
-                      _atualizarUsuario();
-                    } else {
-                      _cadastrarUsuario();
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue)),
+                    labelText: 'Nome',
+                  ),
+                  initialValue: widget.editar ? userEdit.nome : null,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Este campo é obrigatório';
                     }
-                  }
-                },
-              ),
-              Container(
-                height: 40,
-              ),
-              Visibility(
-                visible: widget.editar,
-                child: BotaoWidget(
-                  cor: Colors.red[600],
-                  nome: 'Excluir',
-                  clicar: () {
-                    print('Clicou em excluir');
-                    _excluir(userEdit);
+                  },
+                  onSaved: (value) {
+                    setState(() {
+                      nome = value;
+                    });
                   },
                 ),
-              )
-            ],
+                Container(
+                  height: 40,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue)),
+                    labelText: 'Sobrenome',
+                  ),
+                  initialValue: widget.editar ? userEdit.sobrenome : null,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Este campo é obrigatório';
+                    }
+                  },
+                  onSaved: (value) {
+                    setState(() {
+                      sobrenome = value;
+                    });
+                  },
+                ),
+                Visibility(
+                  visible: !widget.editar,
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: 40,
+                      ),
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue)),
+                          labelText: 'Usuário (Seu email)',
+                        ),
+                        validator: (value) {
+                          bool emailValid = RegExp(
+                                  r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
+                              .hasMatch(value);
+                          if (value.isEmpty) {
+                            return 'Preencha o email!';
+                          } else {
+                            // if (!emailValid){
+                            //   return 'O endereço do email não é válido';
+                            // }
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          setState(() {
+                            usuario = value;
+                          });
+                        },
+                      ),
+                      Container(
+                        height: 40,
+                      ),
+                      TextFormField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue)),
+                          labelText: 'Senha',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Este campo é obrigatório';
+                          } else {
+                            if (value.length < 6) {
+                              return 'A senha precisa ter no mínimo 6 dígitos';
+                            }
+                          }
+                        },
+                        onSaved: (value) {
+                          setState(() {
+                            senha = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 40,
+                ),
+                BotaoWidget(
+                  
+                  nome: widget.editar ? 'Atualizar' : 'Cadastrar',
+                  clicar: () {
+                    if (formkey.currentState.validate()) {
+                      formkey.currentState.save();
+                      // salvarUsuario();
+                      if (widget.editar) {
+                        _atualizarUsuario();
+                      } else {
+                        _cadastrarUsuario();
+                      }
+                    }
+                  },
+                ),
+                Container(
+                  height: 40,
+                ),
+                Visibility(
+                  visible: widget.editar,
+                  child: BotaoWidget(
+                    
+                    cor: Colors.red[600],
+                    nome: 'Excluir',
+                    clicar: () {
+                      print('Clicou em excluir');
+                      _excluir(userEdit);
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

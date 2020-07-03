@@ -61,6 +61,9 @@ class _CadEstabStep1State extends State<CadEstabStep1> {
           key: formkey,
           child: Column(
             children: <Widget>[
+              SizedBox(
+                height: 10,
+              ),
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
