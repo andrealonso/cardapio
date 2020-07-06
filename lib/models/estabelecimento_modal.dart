@@ -9,28 +9,12 @@ class EstabelecimentoModal {
   String usuario;
   String senha;
   String descricao;
-  Map<String, bool> tiposComidas;
+  String tiposComidas;
   String outrosTipos;
   String img;
-
-  Map<String, dynamic> mockEstab = {
-    'uid': 'testeUID',
-    'nome': 'House 82',
-    'endereco': 'Rua bla bla bla, 87',
-    'cep': '28000100',
-    'horaAbre': '18:00',
-    'horaFecha': '0:00',
-    'usuario': 'andrealonso@hotmail.com',
-    'descricao': 'Esse restaurando é muito bom',
-    'tiposComidas': [
-      {'tipo': 'Pizza', 'ativo': true},
-      {'tipo': 'Massa', 'ativo': true},
-      {'tipo': 'Peixe', 'ativo': false},
-      {'tipo': 'Carne', 'ativo': true}
-    ],
-    'outrosTipos': 'Camarão, salgados'
-  };
-
+  int likes;
+  bool onfavorito = false;
+  bool onlike = false;
 
   EstabelecimentoModal(
       {this.uid,
@@ -41,8 +25,11 @@ class EstabelecimentoModal {
       this.horaFecha,
       this.descricao,
       this.tiposComidas,
-      this.outrosTipos, 
-      this.img});
+      this.outrosTipos,
+      this.img,
+      this.likes = 0,
+      this.onfavorito,
+      this.onlike});
 
   EstabelecimentoModal.fromJson(Map<String, dynamic> json) {
     uid = json['uid'];
@@ -55,6 +42,7 @@ class EstabelecimentoModal {
     tiposComidas = json['tiposComidas'];
     outrosTipos = json['outrosTipos'];
     img = json['img'];
+    likes = json['likes'];
   }
 
   Map<String, dynamic> toJson() {
@@ -69,6 +57,7 @@ class EstabelecimentoModal {
     data['tiposComidas'] = this.tiposComidas;
     data['outrosTipos'] = this.outrosTipos;
     data['img'] = this.img;
+    data['likes'] = this.likes;
     return data;
   }
 }

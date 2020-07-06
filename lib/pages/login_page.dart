@@ -1,6 +1,7 @@
 import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/pages/home_page.dart';
 import 'package:cardapio/services/usuario_service.dart';
+import 'package:cardapio/util/validacoes.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
       try {
         await _auth.signInWithEmailAndPassword(
             email: form_user.trim(), password: form_pass.trim());
-            
+
         final usuarioAtual = await _service.getPerfil();
         print('perfil capturado');
 
@@ -106,52 +107,39 @@ class _LoginPageState extends State<LoginPage> {
                   form_user = value;
                 },
                 validator: (value) {
-                  bool emailValid =
-                      RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
-                          .hasMatch(value);
-                  if (value.isEmpty) {
-                    return 'Preencha o email!';
-                  } else {
-                    // if (!emailValid){
-                    //   return 'O endereço do email não é válido';
-                    // }
-                  }
-                  return null;
+                  Validacao().email(value);
                 },
               ),
               Container(
                 height: 50,
               ),
               TextFormField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue)),
-                  labelText: 'Senha',
-                ),
-                onSaved: (value) {
-                  form_pass = value;
-                },
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Preench a senha!';
-                  } else {
-                    if (value.length < 6) {
-                      return 'A senha precisa ter no mínimo 6 dígitos';
-                    }
-                  }
-                  return null;
-                },
-              ),
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue)),
+                    labelText: 'Senha',
+                  ),
+                  onSaved: (value) {
+                    form_pass = value;
+                  },
+                  validator: (value) {
+                    Validacao().tamanho(value, 8);
+                  }),
               Container(
                 height: 20,
               ),
               Container(
                 child: Visibility(
                   visible: _visivel,
-                  child: Text('Usuario ou senha inválida!', style: TextStyle(color: Colors.red),),
-                  replacement: Text('Usuario ou senha inválida!', style: TextStyle(color: Colors.white),),
-                  
+                  child: Text(
+                    'Usuario ou senha inválida!',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  replacement: Text(
+                    'Usuario ou senha inválida!',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
               Container(

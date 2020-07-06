@@ -1,7 +1,7 @@
 import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cardapio/models/produto_model.dart';
-import 'package:cardapio/services/produto_service.dart';
 import 'package:cardapio/widgets/avaliacao_item_widget.dart';
+import 'package:cardapio/widgets/imgCache.dart';
 import 'package:cardapio/widgets/textos_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +40,7 @@ class _ProdutoViewPageState extends State<ProdutoViewPage> {
                     decoration: BoxDecoration(
                       border: Border.all(color: Color(0xffcccccc)),
                     ),
-                    child: Image.network(_produto.img, fit: BoxFit.cover),
+                    child: FittedBox(fit: BoxFit.cover, child: ImgCache(img:_produto.img),),
                   ),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.end,

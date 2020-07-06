@@ -4,6 +4,7 @@ import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cardapio/models/produto_model.dart';
 import 'package:cardapio/pages/cardapio_page.dart';
 import 'package:cardapio/services/produto_service.dart';
+import 'package:cardapio/util/validacoes.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,10 +13,8 @@ class CadProduto extends StatefulWidget {
   final EstabelecimentoModal estab;
   final ProdutoModel produto;
   final bool editar;
-  final String id;
 
-  const CadProduto(
-      {Key key, this.estab, this.produto, this.editar = false, this.id})
+  const CadProduto({Key key, this.estab, this.produto, this.editar = false})
       : super(key: key);
   @override
   _CadProdutoFormState createState() => _CadProdutoFormState();
@@ -42,6 +41,9 @@ class _CadProdutoFormState extends State<CadProduto> {
           key: _formkey,
           child: Column(
             children: <Widget>[
+              SizedBox(
+                height: 10,
+              ),
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +90,10 @@ class _CadProdutoFormState extends State<CadProduto> {
                     border: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue)),
                   ),
-                  validator: (value) {},
+                  validator: (value) {
+                    Validacao().vazio(value);
+                    Validacao().tamanho(value, 2);
+                  },
                   onSaved: (value) {
                     _produto.nome = value;
                   },
@@ -173,7 +178,7 @@ class _CadProdutoFormState extends State<CadProduto> {
                   nome: 'Excluir',
                   clicar: () {
                     print('Clicou em excluir');
-                    _excluir(widget.id);
+                    _excluir(_produto.id);
                   },
                 ),
               ),
@@ -213,13 +218,13 @@ class _CadProdutoFormState extends State<CadProduto> {
     _voltar(context);
   }
 
-  _atualizar() async{
-    ProdutoService().atualizar(_produto,widget.id, image: file);
+  _atualizar() async {
+    ProdutoService().atualizar(_produto, image: file);
     _voltar(context);
   }
 
   _excluir(String id) async {
-    await ProdutoService().excluir(id);
+    await ProdutoService().excluir(_produto);
     _voltar(context);
   }
 

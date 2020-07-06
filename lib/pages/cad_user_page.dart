@@ -4,6 +4,7 @@ import 'package:cardapio/models/usuario_modal.dart';
 import 'package:cardapio/pages/home_page.dart';
 import 'package:cardapio/pages/inicial_page.dart';
 import 'package:cardapio/services/usuario_service.dart';
+import 'package:cardapio/util/validacoes.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -27,16 +28,18 @@ class _CadUserPageState extends State<CadUserPage> {
   final _auth = FirebaseAuth.instance;
   final _picker = ImagePicker();
   File file;
+  bool _visivel = false;
 
   var nome = '';
   var sobrenome = '';
   var usuario = '';
-  var senha = '';
+  var senha1 = '';
+  var senha2 = '';
 
   _cadastrarUsuario() async {
     try {
       var usuarioCadastrado = await _auth.createUserWithEmailAndPassword(
-          email: usuario.trim(), password: senha);
+          email: usuario.trim(), password: senha1);
 
       var _perfilNovo = PerfilUsuarioModel(
           nome: nome,
@@ -92,7 +95,7 @@ class _CadUserPageState extends State<CadUserPage> {
         child: Form(
           key: formkey,
           child: SingleChildScrollView(
-                      child: Column(
+            child: Column(
               children: <Widget>[
                 Center(
                   child: Row(
@@ -150,9 +153,7 @@ class _CadUserPageState extends State<CadUserPage> {
                   ),
                   initialValue: widget.editar ? userEdit.nome : null,
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Este campo é obrigatório';
-                    }
+                    return Validacao().tamanho(value, 2);
                   },
                   onSaved: (value) {
                     setState(() {
@@ -171,9 +172,7 @@ class _CadUserPageState extends State<CadUserPage> {
                   ),
                   initialValue: widget.editar ? userEdit.sobrenome : null,
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Este campo é obrigatório';
-                    }
+                    Validacao().vazio(value);
                   },
                   onSaved: (value) {
                     setState(() {
@@ -196,17 +195,7 @@ class _CadUserPageState extends State<CadUserPage> {
                           labelText: 'Usuário (Seu email)',
                         ),
                         validator: (value) {
-                          bool emailValid = RegExp(
-                                  r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
-                              .hasMatch(value);
-                          if (value.isEmpty) {
-                            return 'Preencha o email!';
-                          } else {
-                            // if (!emailValid){
-                            //   return 'O endereço do email não é válido';
-                            // }
-                          }
-                          return null;
+                          return Validacao().email(value);
                         },
                         onSaved: (value) {
                           setState(() {
@@ -225,17 +214,30 @@ class _CadUserPageState extends State<CadUserPage> {
                           labelText: 'Senha',
                         ),
                         validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Este campo é obrigatório';
-                          } else {
-                            if (value.length < 6) {
-                              return 'A senha precisa ter no mínimo 6 dígitos';
-                            }
-                          }
+                          return Validacao().tamanho(value, 8);
                         },
                         onSaved: (value) {
                           setState(() {
-                            senha = value;
+                            senha1 = value;
+                          });
+                        },
+                      ),
+                      Container(
+                        height: 40,
+                      ),
+                      TextFormField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue)),
+                          labelText: 'Confirmar senha',
+                        ),
+                        validator: (value) {
+                          return Validacao().tamanho(value, 8);
+                        },
+                        onSaved: (value) {
+                          setState(() {
+                            senha2 = value;
                           });
                         },
                       ),
@@ -243,15 +245,30 @@ class _CadUserPageState extends State<CadUserPage> {
                   ),
                 ),
                 Container(
+                  child: Visibility(
+                    visible: _visivel,
+                    child: Text(
+                      'As senhas não conferem',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    replacement: Text(
+                      'Usuario ou senha inválida!',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+                Container(
                   height: 40,
                 ),
                 BotaoWidget(
-                  
                   nome: widget.editar ? 'Atualizar' : 'Cadastrar',
                   clicar: () {
                     if (formkey.currentState.validate()) {
                       formkey.currentState.save();
-                      // salvarUsuario();
+                      setState(() {
+                        _visivel = !Validacao().confirmarSenha(senha1, senha2);
+                      });
+
                       if (widget.editar) {
                         _atualizarUsuario();
                       } else {
@@ -266,7 +283,6 @@ class _CadUserPageState extends State<CadUserPage> {
                 Visibility(
                   visible: widget.editar,
                   child: BotaoWidget(
-                    
                     cor: Colors.red[600],
                     nome: 'Excluir',
                     clicar: () {

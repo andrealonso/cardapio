@@ -9,7 +9,7 @@ class AvaliacaoItem extends StatelessWidget {
     return val == 1
         ? Icon(
             Icons.star,
-            color: Color(0xff777777),
+            color: Color(0xFFE6C019),
           )
         : Icon(
             Icons.star_border,

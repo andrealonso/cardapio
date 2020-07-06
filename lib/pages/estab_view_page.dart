@@ -1,16 +1,29 @@
+import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cardapio/pages/cardapio_page.dart';
 import 'package:cardapio/widgets/avaliacao_item_widget.dart';
 import 'package:cardapio/widgets/botao_widget.dart';
+import 'package:cardapio/widgets/favoritoEstab_wiget.dart';
+import 'package:cardapio/widgets/imgCache.dart';
 import 'package:cardapio/widgets/textos_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
-class EstabView extends StatelessWidget {
+class EstabView extends StatefulWidget {
   final EstabelecimentoModal estab;
 
   const EstabView({Key key, this.estab}) : super(key: key);
+
+  @override
+  _EstabViewState createState() => _EstabViewState();
+}
+
+class _EstabViewState extends State<EstabView> {
   @override
   Widget build(BuildContext context) {
+    final usuarioAtual = GetIt.I<UserController>().usuarioAtual;
+    var _estab = widget.estab;
+
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -19,10 +32,11 @@ class EstabView extends StatelessWidget {
             expandedHeight: 250,
             flexibleSpace: FlexibleSpaceBar(
               collapseMode: CollapseMode.parallax,
-              title: Text(estab.nome),
-              background: Image.network(
-                estab.img,
+              background: FittedBox(
                 fit: BoxFit.cover,
+                child: ImgCache(
+                  img: widget.estab.img,
+                ),
               ),
               centerTitle: true,
             ),
@@ -40,15 +54,38 @@ class EstabView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
-                          IconButton(
-                            icon:
-                                Icon(Icons.favorite_border, color: Colors.red),
-                            onPressed: () {},
+                          FavoritoEstabWidget(
+                            usuario: usuarioAtual,
+                            estab: _estab,
                           ),
                           Column(
                             children: <Widget>[
-                              Icon(Icons.thumb_up, color: Colors.blue),
-                              Text('345')
+                              _estab.onlike
+                                  ? IconButton(
+                                      icon: Icon(
+                                        Icons.thumb_up,
+                                        color: Colors.blue,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          if (_estab.likes > 0) {
+                                            _estab.likes--;
+                                          }
+                                          _estab.onlike = !_estab.onlike;
+                                        });
+                                      })
+                                  : IconButton(
+                                      icon: Icon(
+                                        Icons.thumb_up,
+                                        color: Colors.black38,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _estab.likes++;
+                                          _estab.onlike = !_estab.onlike;
+                                        });
+                                      }),
+                              Text(_estab.likes.toString())
                             ],
                           ),
                         ],
@@ -59,10 +96,10 @@ class EstabView extends StatelessWidget {
                     height: 10,
                   ),
                   Titulo(texto: 'Descrição'),
-                  Paragrafo(texto: estab.descricao),
+                  Paragrafo(texto: widget.estab.descricao),
                   SizedBox(height: 10),
                   Titulo(texto: 'Local'),
-                  Paragrafo(texto: estab.endereco),
+                  Paragrafo(texto: widget.estab.endereco),
                   SizedBox(height: 10),
                   Titulo(texto: 'Avaliação'),
                   AvaliacaoItem(texto: 'Ambiente', valor: 5),
@@ -104,18 +141,13 @@ class EstabView extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           BotaoWidget(
             nome: 'Cardápio',
-            largura: 140,
+            largura: 200,
             clicar: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => CardapioPage(
-                        estab: estab,
+                        estab: widget.estab,
                       )));
             },
-          ),
-          BotaoWidget(
-            nome: 'Local',
-           largura: 140,
-            clicar: () {},
           ),
         ]),
       ),

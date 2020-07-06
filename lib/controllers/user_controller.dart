@@ -9,7 +9,7 @@ abstract class _UserControllerBase with Store {
   PerfilUsuarioModel usuarioAtual;
 
   @action
-  void setUsuario(PerfilUsuarioModel usuario){
+  void setUsuario(PerfilUsuarioModel usuario) {
     usuarioAtual = usuario;
   }
 }

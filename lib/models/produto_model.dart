@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 class ProdutoModel {
+  String id;
   String uid;
   String nome;
   String img;
@@ -8,6 +7,8 @@ class ProdutoModel {
   String composicao;
   double preco;
   int likes;
+  bool onfavorito = false;
+  bool onlike = false;
 
   ProdutoModel(
       {this.uid,
@@ -16,7 +17,9 @@ class ProdutoModel {
       this.descricao,
       this.composicao,
       this.preco,
-      this.likes});
+      this.likes = 0,
+      this.onfavorito,
+      this.onlike});
 
   ProdutoModel.fromJson(Map<String, dynamic> json) {
     uid = json['uid'];

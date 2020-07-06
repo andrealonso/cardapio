@@ -7,7 +7,11 @@ class BotaoWidget extends StatelessWidget {
   final double largura;
 
   const BotaoWidget(
-      {Key key, this.nome, this.clicar, this.cor = Colors.blue, this.largura})
+      {Key key,
+      this.nome,
+      this.clicar,
+      this.cor = Colors.deepOrange,
+      this.largura})
       : super(key: key);
   @override
   Widget build(BuildContext context) {

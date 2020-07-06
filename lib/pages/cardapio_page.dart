@@ -1,8 +1,11 @@
+import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
+import 'package:cardapio/models/produto_model.dart';
 import 'package:cardapio/pages/cad_produto_page.dart';
 import 'package:cardapio/services/produto_service.dart';
 import 'package:cardapio/widgets/card_produto.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class CardapioPage extends StatefulWidget {
   final EstabelecimentoModal estab;
@@ -13,28 +16,53 @@ class CardapioPage extends StatefulWidget {
 }
 
 class _CardapioPageState extends State<CardapioPage> {
-List<Map<String,dynamic>> listaProdutos;
+  List<ProdutoModel> listaProdutos = [];
+  List<ProdutoModel> listaFiltrada = [];
   @override
   void initState() {
     super.initState();
     _exibirProdutos();
-  
   }
 
   _exibirProdutos() async {
     listaProdutos = await ProdutoService().listarProdutos(widget.estab.uid);
     setState(() {});
   }
-  _addProduto(){
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> CadProduto(estab: widget.estab,)));
+
+  _addProduto() {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => CadProduto(
+              estab: widget.estab,
+            )));
   }
 
-   Widget build(BuildContext context) {
+  List<ProdutoModel> _filtrar(List<ProdutoModel> lista) {
+    setState(() {
+      lista = lista.where((f) => f.onfavorito).toList();
+    });
+    return lista;
+  }
+
+  _buscarNome(List<ProdutoModel> lista, String value) {
+    if (value.length > 0) {
+      listaFiltrada = lista
+          .where((f) => f.nome.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    } else {
+      listaFiltrada = lista.where((f) => f.nome.isNotEmpty).toList();
+    }
+    setState(() {});
+  }
+
+  Widget build(BuildContext context) {
+    final usuarioAtual = GetIt.I<UserController>().usuarioAtual;
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: _addProduto,
-      ),
+      floatingActionButton: (usuarioAtual.uid == widget.estab.uid)
+          ? FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: _addProduto,
+            )
+          : Container(),
       appBar: AppBar(
         title: Text(widget.estab?.nome),
         centerTitle: true,
@@ -65,7 +93,10 @@ List<Map<String,dynamic>> listaProdutos;
                 Expanded(
                   child: ListView(
                     children: listaProdutos.map((data) {
-                      return CardProdutoWidget(produto: data["produto"],id: data["id"],estab: widget.estab,);
+                      return CardProdutoWidget(
+                        produto: data,
+                        estab: widget.estab,
+                      );
                     }).toList(),
                   ),
                 )

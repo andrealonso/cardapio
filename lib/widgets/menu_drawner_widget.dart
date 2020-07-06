@@ -6,6 +6,7 @@ import 'package:cardapio/pages/inicial_page.dart';
 import 'package:cardapio/services/estab_firestore_service.dart';
 import 'package:cardapio/services/estab_service.dart';
 import 'package:cardapio/util/constantes.dart';
+import 'package:cardapio/widgets/imgCacheAvatar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -24,15 +25,11 @@ class MenuDrawerWidget extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Container(
-                  height: 100,
-                  width: 100,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    backgroundImage: userAtual.img != null
-                        ? NetworkImage(userAtual.img)
-                        : NetworkImage(imageAvatarPadrao),
-                  ),
-                ),
+                    height: 100,
+                    width: 100,
+                    child: ImgCacheAvatar(
+                      img: userAtual.img,
+                    )),
                 SizedBox(
                   height: 10,
                 ),
@@ -57,19 +54,16 @@ class MenuDrawerWidget extends StatelessWidget {
             trailing: Icon(Icons.navigate_next),
             onTap: () async {
               try {
-              final estab = await EstabService().getEstab(userAtual.uid);
+                final estab = await EstabService().getEstab(userAtual.uid);
 
-              _goPush(
-                  context,
-                  CadEstabStep1(
-                    estab: estab,
-                    editar: estab!=null?true:false,
-                  ));
-           
+                _goPush(
+                    context,
+                    CadEstabStep1(
+                      estab: estab,
+                      editar: estab != null ? true : false,
+                    ));
               } catch (e) {
-              _goPush(
-                  context,
-                  CadEstabStep1());
+                _goPush(context, CadEstabStep1());
               }
             },
           ),

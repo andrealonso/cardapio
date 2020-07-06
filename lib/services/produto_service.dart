@@ -11,8 +11,7 @@ class ProdutoService {
 
   Future<ProdutoModel> cadastrar(ProdutoModel produto, {File image}) async {
     if (image != null) {
-      final imagePath =
-          'imagens/produtos/${produto.uid}_${DateTime.now()}.jpg';
+      final imagePath = 'imagens/produtos/${produto.uid}_${DateTime.now()}.jpg';
       final task = storege.ref().child(imagePath).putFile(image);
       final snapshot = await task.onComplete;
       final url = await snapshot.ref.getDownloadURL();
@@ -29,10 +28,15 @@ class ProdutoService {
     return produto;
   }
 
-  Future<ProdutoModel> atualizar(ProdutoModel produto,String id, {File image}) async {
+  Future<ProdutoModel> atualizar(ProdutoModel produto, {File image}) async {
     if (image != null) {
-      final imagePath =
-          'imagens/produtos/${produto.uid}_${DateTime.now()}.jpg';
+      if (produto.img != null) {
+        final imgStorage =
+            await FirebaseStorage.instance.getReferenceFromUrl(produto.img);
+        await imgStorage.delete();
+        print("Imagem antiga deletada.");
+      }
+      final imagePath = 'imagens/produtos/${produto.uid}_${DateTime.now()}.jpg';
       final task = storege.ref().child(imagePath).putFile(image);
       final snapshot = await task.onComplete;
       final url = await snapshot.ref.getDownloadURL();
@@ -40,7 +44,7 @@ class ProdutoService {
       produto.img = url;
     }
     try {
-      await db.document(id).updateData({
+      await db.document(produto.id).updateData({
         "img": produto.img,
         "nome": produto?.nome,
         "descricao": produto.descricao,
@@ -64,9 +68,9 @@ class ProdutoService {
     return produto;
   }
 
-  Future<List<Map<String, dynamic>>> listarProdutos(String uid) async {
+  Future<List<ProdutoModel>> listarProdutos(String uid) async {
     final db = Firestore.instance.collection('produtos');
-    List<Map<String, dynamic>> lista = [];
+    List<ProdutoModel> lista = [];
 
     final query = db
         .where("uid", isEqualTo: uid)
@@ -75,37 +79,29 @@ class ProdutoService {
 
     query.listen((result) {
       result.documents.forEach((f) {
-        lista.add({
-          "produto": ProdutoModel.fromJson(f.data),
-          "id": f.documentID
-        });
+        f.data["id"] = f.documentID;
+        lista.add(ProdutoModel.fromJson(f.data));
       });
     });
 
     return lista;
   }
 
-  Future<void> excluir(String id) async {
+  Future<void> excluir(ProdutoModel produto) async {
     final db = Firestore.instance.collection('produtos');
-try {
-    await db.document(id).delete(); 
-    print('produto excluido com sucesso!'); 
-} catch (e) {
-  print(e);
-}
-
+    try {
+      await db.document(produto.id).delete();
+      print('produto excluido com sucesso!');
+    } catch (e) {
+      print(e);
+    }
   }
 
-  Future<List<ProdutoModel>> excluirTodos(String uid) async {
+  Future<void> excluirTodos(String uid) async {
     final db = Firestore.instance.collection('produtos');
 
-    final List<ProdutoModel> lista = [];
-    // final snapshot = await db.collection("produtos").getDocuments();
     final query = db.where("uid", isEqualTo: uid).snapshots();
 
-    // query.documents.forEach((f) {
-    //   lista.add(ProdutoModel.fromJson(f.data));
-    // });
     query.listen((data) {
       data.documents.forEach((f) {
         print(f.data['nome']);
@@ -113,18 +109,6 @@ try {
       });
     });
 
-    return lista;
-  }
-
-  printProdutos(String uid) async {
-    final db = Firestore.instance.collection('produtos');
-
-    final List<ProdutoModel> lista = [];
-    // final snapshot = await db.collection("produtos").getDocuments();
-    final query = await db.where("uid", isEqualTo: uid).getDocuments();
-
-    query.documents.forEach((f) {
-      print(f.data['nome']);
-    });
+    return print("Produtos UID: ${uid} excluidos!");
   }
 }

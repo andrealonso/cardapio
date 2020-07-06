@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cardapio/services/estab_firestore_service.dart';
+import 'package:cardapio/services/produto_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -34,6 +35,12 @@ class EstabService {
   Future<EstabelecimentoModal> atualizar(EstabelecimentoModal estab,
       {File image}) async {
     if (image != null) {
+      if (estab.img != null) {
+        final imgStorage =
+            await FirebaseStorage.instance.getReferenceFromUrl(estab.img);
+        await imgStorage.delete();
+        print("Imagem antiga deletada.");
+      }
       final imagePath =
           'imagens/estabelecimentos/${estab.uid}_${DateTime.now()}.jpg';
       final task = storege.ref().child(imagePath).putFile(image);
@@ -89,6 +96,7 @@ class EstabService {
             await FirebaseStorage.instance.getReferenceFromUrl(estab.img);
         await imgStorage.delete();
       }
+      await ProdutoService().excluirTodos(uid);
       await db.document(estab.uid).delete();
     } catch (e) {
       print(e.toString());
