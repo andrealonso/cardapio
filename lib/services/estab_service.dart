@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:cardapio/controllers/user_controller.dart';
+import 'package:cardapio/models/curtidasEstab_modal.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
-import 'package:cardapio/services/estab_firestore_service.dart';
+import 'package:cardapio/models/usuario_modal.dart';
 import 'package:cardapio/services/produto_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -70,8 +71,6 @@ class EstabService {
     EstabelecimentoModal estab;
 
     final resp = await db.document(uid).get();
-    print(resp.exists);
-
     estab = EstabelecimentoModal.fromJson(resp.data);
     return estab;
   }
@@ -81,9 +80,10 @@ class EstabService {
 
     final List<EstabelecimentoModal> lista = [];
     final snapshot = await db.collection("estabelecimentos").getDocuments();
-
-    snapshot.documents
-        .forEach((f) => lista.add(EstabelecimentoModal.fromJson(f.data)));
+    snapshot.documents.forEach((f) async {
+      var estab = EstabelecimentoModal.fromJson(f.data);
+      lista.add(estab);
+    });
 
     return lista;
   }
@@ -101,5 +101,50 @@ class EstabService {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  Future<EstabelecimentoModal> addLike(
+      EstabelecimentoModal estab, CurtidaModel curtida) async {
+    try {
+      final curtidas = await db
+          .document(estab.uid)
+          .collection("curtidas")
+          .document(curtida.uid)
+          .setData(curtida.toJson());
+      print("Curtida adicionado: ${curtida.nome}");
+      estab = await getCurtidas(estab);
+      return estab;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future<EstabelecimentoModal> delLike(
+      EstabelecimentoModal estab, CurtidaModel curtida) async {
+    try {
+      final curtidas = await db
+          .document(estab.uid)
+          .collection("curtidas")
+          .document(curtida.uid)
+          .delete();
+      print("Curtida adicionado: ${curtida.nome}");
+      estab = await getCurtidas(estab);
+      return estab;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future<EstabelecimentoModal> getCurtidas(EstabelecimentoModal estab) async {
+    final curtidas =
+        await db.document(estab.uid).collection('curtidas').getDocuments();
+    curtidas.documents
+        .forEach((f) => estab.curtidas.add(CurtidaModel.fromJson(f.data)));
+    print('teste');
+    estab.likes = curtidas.documents.length;
+
+    return estab;
   }
 }

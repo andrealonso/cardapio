@@ -1,3 +1,5 @@
+import 'package:cardapio/models/curtidasEstab_modal.dart';
+
 class EstabelecimentoModal {
   String uid;
   String tipoUser;
@@ -15,6 +17,7 @@ class EstabelecimentoModal {
   int likes;
   bool onfavorito = false;
   bool onlike = false;
+  List<CurtidaModel> curtidas = [];
 
   EstabelecimentoModal(
       {this.uid,

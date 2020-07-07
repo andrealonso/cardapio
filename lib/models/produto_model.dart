@@ -9,6 +9,7 @@ class ProdutoModel {
   int likes;
   bool onfavorito = false;
   bool onlike = false;
+  List<Map<String, dynamic>> curtidas = [];
 
   ProdutoModel(
       {this.uid,
@@ -21,7 +22,8 @@ class ProdutoModel {
       this.onfavorito,
       this.onlike});
 
-  ProdutoModel.fromJson(Map<String, dynamic> json) {
+  ProdutoModel.fromJson(Map<String, dynamic> json, String docId) {
+    id = docId;
     uid = json['uid'];
     nome = json['nome'];
     img = json['img'];

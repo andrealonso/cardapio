@@ -11,9 +11,8 @@ class CardProdutoWidget extends StatelessWidget {
   final EstabelecimentoModal estab;
   final ProdutoModel produto;
   final Function clickCard;
-  final bool favorito;
 
-  CardProdutoWidget({this.produto, this.clickCard, this.favorito, this.estab});
+  CardProdutoWidget({this.produto, this.clickCard, this.estab});
 
   _viewPage(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(

@@ -62,8 +62,8 @@ class ProdutoService {
     ProdutoModel produto;
     final _auth = await FirebaseAuth.instance.currentUser();
     final resp = await db.document(_auth.uid).get();
-    print(resp.exists);
-    produto = ProdutoModel.fromJson(resp.data);
+
+    produto = ProdutoModel.fromJson(resp.data, resp.documentID);
 
     return produto;
   }
@@ -72,18 +72,15 @@ class ProdutoService {
     final db = Firestore.instance.collection('produtos');
     List<ProdutoModel> lista = [];
 
-    final query = db
+    final query = await db
         .where("uid", isEqualTo: uid)
         .orderBy("nome", descending: true)
-        .snapshots();
+        .getDocuments();
 
-    query.listen((result) {
-      result.documents.forEach((f) {
-        f.data["id"] = f.documentID;
-        lista.add(ProdutoModel.fromJson(f.data));
-      });
+    await query.documents.forEach((f) {
+      lista.add(ProdutoModel.fromJson(f.data, f.documentID));
     });
-
+    print(lista);
     return lista;
   }
 
@@ -101,7 +98,6 @@ class ProdutoService {
     final db = Firestore.instance.collection('produtos');
 
     final query = db.where("uid", isEqualTo: uid).snapshots();
-
     query.listen((data) {
       data.documents.forEach((f) {
         print(f.data['nome']);

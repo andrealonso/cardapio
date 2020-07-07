@@ -18,7 +18,6 @@ class _InicialState extends State<Inicial> {
   final _service = UsuarioService();
 
   @override
-
   Widget build(BuildContext context) {
     _navegar(context);
     return Scaffold(
@@ -30,15 +29,11 @@ class _InicialState extends State<Inicial> {
 
   _navegar(BuildContext context) async {
     final userAtual = await _auth.currentUser();
-
     if (userAtual != null) {
       try {
         final usuarioAtual = await _service.getPerfil();
         print("tela inicial ${usuarioAtual.nome}");
-        
         GetIt.I<UserController>().setUsuario(usuarioAtual);
-
-        
         _navegateTo(HomePage());
       } catch (e) {
         _navegateTo(Bemvindo());

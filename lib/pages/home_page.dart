@@ -1,4 +1,5 @@
 import 'package:cardapio/controllers/user_controller.dart';
+import 'package:cardapio/models/curtidasEstab_modal.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cardapio/models/usuario_modal.dart';
 import 'package:cardapio/pages/estab_view_page.dart';
@@ -112,8 +113,12 @@ class _HomePageState extends State<HomePage> {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
-                print(usuarioAtual.estabsFavoritos
-                    .contains('krG54WLVpLPMM9UxHu00LmZzv793'));
+                CurtidaModel curtida =
+                    CurtidaModel.fromJson(usuarioAtual.toJson());
+                EstabelecimentoModal teste =
+                    await EstabService().addLike(listaEstabs[1], curtida);
+                print(teste.uid);
+                print(teste.curtidas.toString());
               },
               child: Icon(
                 Icons.filter_list,

@@ -1,9 +1,12 @@
+import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cardapio/models/produto_model.dart';
 import 'package:cardapio/widgets/avaliacao_item_widget.dart';
+import 'package:cardapio/widgets/favoritoProduto_widget.dart';
 import 'package:cardapio/widgets/imgCache.dart';
 import 'package:cardapio/widgets/textos_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class ProdutoViewPage extends StatefulWidget {
   final EstabelecimentoModal estab;
@@ -21,6 +24,7 @@ class _ProdutoViewPageState extends State<ProdutoViewPage> {
   }
 
   Widget build(BuildContext context) {
+    final usuarioAtual = GetIt.I<UserController>().usuarioAtual;
     var _produto = widget.produto;
     var _estab = widget.estab;
     return Scaffold(
@@ -40,7 +44,10 @@ class _ProdutoViewPageState extends State<ProdutoViewPage> {
                     decoration: BoxDecoration(
                       border: Border.all(color: Color(0xffcccccc)),
                     ),
-                    child: FittedBox(fit: BoxFit.cover, child: ImgCache(img:_produto.img),),
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: ImgCache(img: _produto.img),
+                    ),
                   ),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -52,12 +59,14 @@ class _ProdutoViewPageState extends State<ProdutoViewPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
-                              
-                              IconButton(
-                                icon: Icon(Icons.favorite_border,
-                                    color: Colors.red),
-                                onPressed: () {},
+                              FavoritoProdutoWidget(
+                                produto: _produto,
                               ),
+                              // IconButton(
+                              //   icon: Icon(Icons.favorite_border,
+                              //       color: Colors.red),
+                              //   onPressed: () {},
+                              // ),
                               Column(
                                 children: <Widget>[
                                   Icon(Icons.thumb_up, color: Colors.blue),
@@ -81,16 +90,13 @@ class _ProdutoViewPageState extends State<ProdutoViewPage> {
                                 texto: ("R\$ ${_produto.preco.toString()}")),
                           ],
                         ),
-
                         Titulo(texto: 'Descrição'),
                         Paragrafo(texto: _produto.descricao),
-
                         Titulo(texto: 'Composição'),
                         Paragrafo(texto: _produto.composicao),
-
                         Titulo(texto: 'Avaliação'),
                         AvaliacaoItem(texto: 'Apresentação', valor: 3),
-                        AvaliacaoItem(texto: 'Sabor', valor:4),
+                        AvaliacaoItem(texto: 'Sabor', valor: 4),
                         AvaliacaoItem(texto: 'Preço', valor: 5),
                         AvaliacaoItem(texto: 'Tempo de preparo', valor: 2),
                         Titulo(texto: 'Curtido por'),

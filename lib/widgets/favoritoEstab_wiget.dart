@@ -6,12 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class FavoritoEstabWidget extends StatefulWidget {
-  final bool ativo;
   final EstabelecimentoModal estab;
-  final PerfilUsuarioModel usuario;
 
-  const FavoritoEstabWidget({Key key, this.ativo, this.estab, this.usuario})
-      : super(key: key);
+  const FavoritoEstabWidget({Key key, this.estab}) : super(key: key);
 
   @override
   _FavoritoEstabWidgetState createState() => _FavoritoEstabWidgetState();

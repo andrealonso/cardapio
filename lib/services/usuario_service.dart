@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
+import 'package:cardapio/models/produto_model.dart';
 import 'package:cardapio/models/usuario_modal.dart';
 import 'package:cardapio/services/estab_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -68,6 +69,7 @@ class UsuarioService {
     print(resp.exists);
     perfil = PerfilUsuarioModel.fromJson(resp.data);
     perfil = await getFavoritos(perfil);
+    GetIt.I<UserController>().setUsuario(perfil);
     return perfil;
   }
 
@@ -120,6 +122,34 @@ class UsuarioService {
     return true;
   }
 
+  Future<bool> addProdutoFavorito(String uid, ProdutoModel produto) async {
+    try {
+      await db
+          .document(uid)
+          .collection('produtosFavoritos')
+          .document(produto.id)
+          .setData({"id": produto.id, "nome": produto.nome});
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> delProdutoFavorito(String uid, ProdutoModel produto) async {
+    try {
+      await db
+          .document(uid)
+          .collection('produtosFavoritos')
+          .document(produto.id)
+          .delete();
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    return true;
+  }
+
   Future<PerfilUsuarioModel> getFavoritos(PerfilUsuarioModel usuario) async {
     try {
       final estabs = await db
@@ -139,10 +169,9 @@ class UsuarioService {
 
       produtos.documents.forEach((data) {
         if (data.exists) {
-          usuario.estabsFavoritos.add(data.documentID);
+          usuario.produtosFavoritos.add(data.documentID);
         }
       });
-      GetIt.I<UserController>().setUsuario(usuario);
     } catch (e) {
       print(e);
     }

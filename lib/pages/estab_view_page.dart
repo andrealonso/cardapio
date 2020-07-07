@@ -55,7 +55,6 @@ class _EstabViewState extends State<EstabView> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
                           FavoritoEstabWidget(
-                            usuario: usuarioAtual,
                             estab: _estab,
                           ),
                           Column(

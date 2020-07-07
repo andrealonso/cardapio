@@ -1,6 +1,7 @@
 import 'package:cardapio/controllers/user_controller.dart';
 import 'package:cardapio/models/estabelecimento_modal.dart';
 import 'package:cardapio/pages/estab_view_page.dart';
+import 'package:cardapio/services/estab_service.dart';
 import 'package:cardapio/services/usuario_service.dart';
 import 'package:cardapio/widgets/favoritoEstab_wiget.dart';
 import 'package:cardapio/widgets/imgCache.dart';
@@ -24,7 +25,7 @@ class _ItemWidgetState extends State<ItemWidget> {
     var _estab = widget.estab;
 
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => EstabView(
                   estab: _estab,
@@ -65,32 +66,8 @@ class _ItemWidgetState extends State<ItemWidget> {
             ),
             Column(children: [
               FavoritoEstabWidget(
-                usuario: usuarioAtual,
                 estab: _estab,
               ),
-              // widget.estab.onfavorito
-              //     ? IconButton(
-              //         icon: Icon(Icons.favorite, color: Colors.red),
-              //         onPressed: () async {
-              //           await UsuarioService()
-              //               .delEstabFavorito(usuarioAtual.uid, _estab);
-              //           print('del estab favorito');
-              //           setState(() {
-              //             widget.estab.onfavorito = false;
-              //           });
-              //         },
-              //       )
-              //     : IconButton(
-              //         icon: Icon(Icons.favorite_border, color: Colors.red),
-              //         onPressed: () async {
-              //           await UsuarioService()
-              //               .addEstabFavorito(usuarioAtual.uid, _estab);
-              //           print('add estab favorito');
-              //           setState(() {
-              //             widget.estab.onfavorito = true;
-              //           });
-              //         },
-              //       ),
               _estab.onlike
                   ? IconButton(
                       icon: Icon(
